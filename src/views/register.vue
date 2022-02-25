@@ -14,7 +14,49 @@
     </el-header>
     <el-main>
       <div class="pro-main">
-        <div class="pro-step">111</div>
+        <div class="pro-step">
+          <el-form
+            :model="ruleForm"
+            :rules="rules"
+            ref="ruleForm"
+            label-width="100px"
+            class="demo-ruleForm"
+          >
+            <el-form-item label="邮箱" prop="emailAddress">
+              <el-input v-model="ruleForm.emailAddress"></el-input>
+            </el-form-item>
+            <el-form-item label="验证码" prop="verification">
+              <div id="verf">
+                <el-input v-model="ruleForm.verification"></el-input>
+                <el-button
+                  type="primary"
+                  plain
+                  :disabled="ruleForm.emailAddress == ''"
+                  >获取验证码</el-button
+                >
+              </div>
+            </el-form-item>
+            <el-form-item label="昵称" prop="name">
+              <el-input v-model="ruleForm.name"></el-input>
+            </el-form-item>
+            <el-form-item label="密码" prop="pass">
+              <el-input type="password" v-model="ruleForm.pass"></el-input>
+            </el-form-item>
+            <el-form-item label="确认密码" prop="checkpass">
+              <el-input type="password" v-model="ruleForm.checkpass"></el-input>
+            </el-form-item>
+            <el-form-item class="a">
+              <el-button type="primary" @click="submitForm('ruleForm')"
+                >立即创建</el-button
+              >
+              <el-button @click="resetForm('ruleForm')">重置</el-button>
+            </el-form-item>
+          </el-form>
+          <el-checkbox v-model="checked" id="agree"
+            >同意用户隐私协议</el-checkbox
+          >
+          <!-- checked有错误 -->
+        </div>
       </div>
     </el-main>
   </el-container>
@@ -23,10 +65,87 @@
 <script>
 export default {
   name: "register",
-  data() {},
+  data() {
+    var validateEmail = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请正确填写邮箱"));
+      } else {
+        if (value !== "") {
+          var reg =
+            /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+          if (!reg.test(value)) {
+            callback(new Error("请输入有效的邮箱"));
+          }
+        }
+        callback();
+      }
+    };
+    var validatePass = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入密码"));
+      } else {
+        if (this.ruleForm.checkPass !== "") {
+          this.$refs.ruleForm.validateField("checkPass");
+        }
+        callback();
+      }
+    };
+    var validatePass2 = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请再次输入密码"));
+      } else if (value !== this.ruleForm.pass) {
+        callback(new Error("两次输入密码不一致!"));
+      } else {
+        callback();
+      }
+    };
+    return {
+      checked: false, //隐私协议
+      ruleForm: {
+        name: "", //昵称
+        pass: "", //密码
+        checkpass: "",
+        emailAddress: "", //邮箱地址
+        verification: "", //验证码
+        // btnChangeEnable:true,
+        
+      },
+      rules: {
+        name: [
+          { required: true, message: "请输入昵称", trigger: "blur" },
+          { min: 1, max: 6, message: "长度在 3 到 6 个字符", trigger: "blur" },
+        ],
+        emailAddress: [
+          { required: true, message: "请输入正确的邮箱地址", validator:validateEmail,trigger: "blur" },
+        ],
+        verification: [
+          { required: true, message: "请输入验证码", trigger: "blur" },
+        ],
+        pass: [{ required: true, message:"请输入密码",validator: validatePass, trigger: "blur" }],
+        checkpass: [
+          { required: true, message:"请再次输入密码",validator: validatePass2, trigger: "blur" },
+        ],
+      },
+    };
+  },
+  methods: {
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          alert("submit!");
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
+  },
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .header {
   /* background-color: rgb(179, 176, 176); */
   height: 110px;
@@ -44,15 +163,32 @@ export default {
   margin-right: 15vh;
   float: right;
 }
-.pro-main{
+.pro-main {
   width: 100vh;
   margin: 0 auto;
-  background-color: rgb(192, 192, 207);
-  border-bottom: or;
-
+  // background-color: rgb(192, 192, 207);
+  margin-top: 5rem;
+  padding: 3em;
 }
-a:first-child
-.pro-step{
+#verf {
+  // display: flex;
+  width: 100%;
+}
+#verf .el-input {
+  width: 78%;
+  margin-right: 2%;
+}
+#verf .el-button {
+  width: 20%;
+}
+.a {
+  text-align: center;
+}
+#agree {
+  margin: 0 5rem;
+  text-align: center;
+}
+a:first-child .pro-step {
   margin: 80px auto 0;
   height: 100px;
 }
