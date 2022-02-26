@@ -5,7 +5,7 @@
       <div class="logoName inline"></div>
       <div class="logo">1111</div>
       <div class="tologin">
-        已有账号?<router-link to="login" class="text-yellow-600 link"
+        已有账号?<router-link to="Login" class="text-yellow-600 link"
           >去登陆</router-link
         >
       </div>
