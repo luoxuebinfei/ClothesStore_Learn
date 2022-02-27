@@ -2,7 +2,7 @@
   <div class="body">
     <div class="background">
       <div class="wrap-login100">
-        <div class="login100-pic">
+        <div class="login100-pic" @mousemove="mouseMove" @mouseleave="mouseLeave">
           <img src="../static/images/img-01.png" alt="IMG" />
         </div>
         <div class="form">
@@ -103,19 +103,33 @@ export default {
           }
           if (this.countdown != 60 && this.countdown >= 0) {
             this.codeMsg = `重新发送(${this.countdown})`;
-            
           } else {
             //清除定时器，属性重置
             clearInterval(this.timer);
-            this.codeMsg="获取验证码";
+            this.codeMsg = "获取验证码";
             this.countdown = 60;
             this.timer = null;
             this.codeDisabled = false;
           }
         }, 1000);
-        
       }
     },
+    mouseMove: function (e) {
+      let x = e.offsetX; //相对元素的X偏移量
+      let y = e.offsetY; //相对元素的Y偏移量
+      let img = document.querySelector(".login100-pic");
+      let x1 = img.offsetWidth;//元素的宽度
+      let y1 = img.offsetHeight;//元素的高度
+      document.querySelector(".login100-pic").style.cssText += "will-change: transform";
+      document.querySelector(".login100-pic").style.cssText += `transform:perspective(300px) rotateX(${(x1 / 2 - x) / 20}deg) rotateY(${(y1 / 2 - y) / 20}deg) scale3d(1.1,1.1,1.1)`;
+    },
+    mouseLeave: function () {
+      document.querySelector(
+        ".login100-pic"
+      ).style.transform ="perspective(300px) rotateX(0deg) rotateY(0deg)";
+    },
+  },
+  mounted() {
   },
 };
 </script>
@@ -153,7 +167,6 @@ export default {
 
 .login100-pic img {
   max-width: 100%;
-  //   flex: 1;
 }
 
 .form {
