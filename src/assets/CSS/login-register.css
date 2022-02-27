@@ -1,0 +1,115 @@
+.body {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.background {
+    /* 将背景设置为渐变色 */
+    height: 100%;
+    box-sizing: border-box;
+    background-image: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+}
+
+.wrap-login100 {
+    width: 960px;
+    height: 610px;
+    background-color: white;
+    padding: 177px 130px 33px 95px;
+    /* //设置水平垂直居中 */
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    /* //圆角设置 */
+    border-radius: 25px;
+    display: flex;
+}
+
+.login100-pic {
+    width: 316px;
+    flex: 1;
+}
+
+.login100-pic img {
+    max-width: 100%;
+}
+
+.form {
+    width: 100%;
+    font-size: 24px;
+    flex: 1;
+    text-align: center;
+}
+
+.form .login-from-title {
+    font-weight: 600;
+    margin-bottom: 1em;
+}
+
+.form /deep/ .el-input__inner {
+    border-radius: 25px;
+    margin: 0.5em auto;
+    width: 70%;
+    background-color: rgb(230, 230, 230);
+    font-weight: 600;
+    padding-left: 3em;
+    height: 3.25rem;
+    line-height: 3.5rem;
+}
+
+.form /deep/ .el-input__suffix {
+    margin-right: 4.125rem;
+}
+
+.form /deep/ .el-input__icon {
+    margin-left: 3.5rem;
+    margin-top: 0.125rem;
+    line-height: 3.5rem;
+}
+
+.form /deep/ .el-button {
+    margin: 1em 0 0 0;
+    width: 70%;
+    border-radius: 25px;
+    font-weight: 600;
+    background-color: rgb(87, 184, 70);
+    border: 1px solid rgb(87, 184, 70);
+}
+
+.form /deep/ .el-button:hover {
+    background-color: darkgreen;
+    border: 1px solid darkgreen;
+}
+
+.form .newpage {
+    font-size: 0.6em;
+    color: rgb(131, 130, 130);
+}
+
+.form-ForgotPass .verification /deep/ .el-button {
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    color: gray;
+    margin-right: 0.8rem;
+}
+
+/* 上一步 */
+#return-button {
+    background-color: red;
+    border: 1px solid red;
+}
+
+/* 上一步 */
+#return-button:hover {
+    background-color: rgb(135, 0, 0);
+    border: 1px solid rgb(135, 0, 0);
+}
+
+/* 并排的两个button */
+.abreast-input /deep/ .el-button {
+    width: 35%;
+}

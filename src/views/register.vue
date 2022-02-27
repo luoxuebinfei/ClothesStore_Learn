@@ -1,230 +1,167 @@
 <template>
+  <!-- 注册界面 -->
   <div class="body">
-    <div class="header clearfix">
-      <div class="logo inline"></div>
-      <div class="logoName inline"></div>
-      <div class="logo">1111</div>
-      <div class="tologin">
-        已有账号?<router-link to="Login" class="text-yellow-600 link"
-          >去登陆</router-link
+    <div class="background">
+      <div class="wrap-login100">
+        <div
+          class="login100-pic"
+          @mousemove="mouseMove"
+          @mouseleave="mouseLeave"
         >
-      </div>
-    </div>
-
-    <div class="pro-main clearfix">
-      <el-form
-        :model="ruleForm"
-        :rules="rules"
-        ref="ruleForm"
-        label-width="100px"
-        class="demo-ruleForm"
-      >
-        <el-form-item label="邮箱" prop="emailAddress">
-          <el-input v-model="ruleForm.emailAddress"></el-input>
-        </el-form-item>
-        <el-form-item label="验证码" prop="verification">
-          <div id="verf">
-            <el-input v-model="ruleForm.verification"></el-input>
-            <el-button
-              type="primary"
-              plain
-              :disabled="ruleForm.emailAddress == ''"
-              >获取验证码</el-button
-            >
+          <img src="../static/images/img-01.png" alt="IMG" />
+        </div>
+        <div class="form">
+          <div class="form-ForgotPass" v-show="ishidden">
+            <el-form ref="form" :model="form" label-width="80px">
+              <div class="login-from-title">用户注册</div>
+              <el-input v-model="form.emailAddress" placeholder="邮箱"
+                ><i slot="prefix" class="el-input__icon el-icon-message"></i
+              ></el-input>
+              <div class="verification">
+                <el-input
+                  v-model="form.verification"
+                  placeholder="验证码"
+                  maxlength="6"
+                  ><i slot="prefix" class="el-input__icon el-icon-key"></i
+                  ><el-button
+                    type="text"
+                    slot="suffix"
+                    @click="getCode"
+                    :disabled="codeDisabled"
+                    >{{ codeMsg }}</el-button
+                  ></el-input
+                >
+              </div>
+              <el-button type="primary" @click="ishidden = !ishidden"
+                >继续</el-button
+              >
+            </el-form>
           </div>
-        </el-form-item>
-        <el-form-item label="昵称" prop="name">
-          <el-input v-model="ruleForm.name"></el-input>
-        </el-form-item>
-        <el-form-item label="密码" prop="pass">
-          <el-input type="password" v-model="ruleForm.pass"></el-input>
-        </el-form-item>
-        <el-form-item label="确认密码" prop="checkpass">
-          <el-input type="password" v-model="ruleForm.checkpass"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm')"
-            >立即创建</el-button
-          >
-          <el-button @click="resetForm('ruleForm')">重置</el-button>
-        </el-form-item>
-      </el-form>
-      <el-checkbox v-model="checked" id="agree">同意用户隐私协议</el-checkbox>
+          <div class="form-ForgotPass" v-show="!ishidden">
+            <div class="login-from-title">用户注册</div>
+            <el-form ref="form" :model="form" label-width="80px">
+              <el-input v-model="form.userName" placeholder="昵称"
+                ><i slot="prefix" class="el-input__icon el-icon-message"></i
+              ></el-input>
+              <div class="verification">
+                <el-input
+                  v-model="form.password"
+                  placeholder="密码"
+                  maxlength="10"
+                  show-password><i slot="prefix" class="el-input__icon el-icon-lock"></i
+                ></el-input>
+                <el-input
+                  v-model="form.confirmPass"
+                  placeholder="确认密码"
+                  maxlength="10"
+                  show-password><i slot="prefix" class="el-input__icon el-icon-lock"></i
+                ></el-input>
+              </div>
+              <div class="abreast-input">
+                <el-button
+                  type="primary"
+                  @click="ishidden = !ishidden"
+                  id="return-button"
+                  >上一步</el-button
+                >
+                <el-button type="primary">完成注册</el-button>
+              </div>
+            </el-form>
+          </div>
+          <div
+            style="
+              border: 1px solid rgb(220, 220, 220);
+              margin: 0.5em auto;
+              width: 80%;
+            "
+          ></div>
+          <div class="newpage">
+            <router-link to="login">已有账号?去登录</router-link>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
-
 <script>
 export default {
   name: "register",
   data() {
-    var validateEmail = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请正确填写邮箱"));
-      } else {
-        if (value !== "") {
-          var reg =
-            /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-          if (!reg.test(value)) {
-            callback(new Error("请输入有效的邮箱"));
-          }
-        }
-        callback();
-      }
-    };
-    var validatePass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入密码"));
-      } else {
-        if (this.ruleForm.checkPass !== "") {
-          this.$refs.ruleForm.validateField("checkPass");
-        }
-        callback();
-      }
-    };
-    var validatePass2 = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请再次输入密码"));
-      } else if (value !== this.ruleForm.pass) {
-        callback(new Error("两次输入密码不一致!"));
-      } else {
-        callback();
-      }
-    };
     return {
-      checked: false, //隐私协议
-      ruleForm: {
-        name: "", //昵称
-        pass: "", //密码
-        checkpass: "",
-        emailAddress: "", //邮箱地址
+      ishidden: true,
+      forgot_text: "忘记密码?",
+      // 是否禁用按钮
+      codeDisabled: false,
+      // 倒计时秒数
+      countdown: 60,
+      // 按钮上的文字
+      codeMsg: "获取验证码",
+      // 定时器
+      timer: null,
+      form: {
+        emailAdress: "",
+        userName: "", //用户昵称
+        password: "",
         verification: "", //验证码
-        // btnChangeEnable:true,
-      },
-      rules: {
-        name: [
-          { required: true, message: "请输入昵称", trigger: "blur" },
-          { min: 1, max: 6, message: "长度在 3 到 6 个字符", trigger: "blur" },
-        ],
-        emailAddress: [
-          {
-            required: true,
-            message: "请输入正确的邮箱地址",
-            validator: validateEmail,
-            trigger: "blur",
-          },
-        ],
-        verification: [
-          { required: true, message: "请输入验证码", trigger: "blur" },
-        ],
-        pass: [
-          {
-            required: true,
-            message: "请输入密码",
-            validator: validatePass,
-            trigger: "blur",
-          },
-        ],
-        checkpass: [
-          {
-            required: true,
-            message: "请再次输入密码",
-            validator: validatePass2,
-            trigger: "blur",
-          },
-        ],
+        confirmPass: "", //确认密码
       },
     };
   },
   methods: {
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert("submit!");
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
+    setPassword: function () {
+      //登录和找回密码页面切换
+      this.forgot_text = "登录";
+      this.form.verification = "";
+      this.isforgot = !this.isforgot;
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
+    getCode: function () {
+      //获取验证码
+      if (!this.timer) {
+        this.codeDisabled = true; //按钮设置为不可用
+        this.timer = setInterval(() => {
+          if (this.countdown >= 0 && this.countdown <= 60) {
+            this.countdown--;
+          }
+          if (this.countdown != 60 && this.countdown >= 0) {
+            this.codeMsg = `重新发送(${this.countdown})`;
+          } else {
+            //清除定时器，属性重置
+            clearInterval(this.timer);
+            this.codeMsg = "获取验证码";
+            this.countdown = 60;
+            this.timer = null;
+            this.codeDisabled = false;
+          }
+        }, 1000);
+      }
+    },
+    mouseMove: function (e) {
+      let x = e.offsetX; //相对元素的X偏移量
+      let y = e.offsetY; //相对元素的Y偏移量
+      let img = document.querySelector(".login100-pic");
+      let x1 = img.offsetWidth; //元素的宽度
+      let y1 = img.offsetHeight; //元素的高度
+      document.querySelector(".login100-pic").style.cssText +=
+        "will-change: transform";
+      document.querySelector(
+        ".login100-pic"
+      ).style.cssText += `transform:perspective(300px) rotateX(${
+        (x1 / 2 - x) / 20
+      }deg) rotateY(${(y1 / 2 - y) / 20}deg) scale3d(1.1,1.1,1.1)`;
+    },
+    mouseLeave: function () {
+      document.querySelector(".login100-pic").style.transform =
+        "perspective(300px) rotateX(0deg) rotateY(0deg)";
     },
   },
+  mounted() {},
 };
 </script>
 <style lang="scss" scoped>
-.body{
-  margin: 0 auto;
-  padding: 0;
+@import "../assets/CSS/login-register.css";
+.background {
+  background-image: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
 }
-.header {
-  /* background-color: rgb(179, 176, 176); */
-  height: 15vh;
-  // width: 100%;
-  background: url(http://misc.360buyimg.com/user/reg/3.0.0/css/i/headbg.jpg);
-  background-repeat: repeat-x;
-  background-position-x: left;
-  background-position-y: bottom;
-  margin: 0 5vh;
-  text-align: center;
-  // position: absolute;
-  // top: 0;
-}
-.logo {
-  margin-left: 15vh;
-  float: left;
-}
-.tologin {
-  margin-top: 55px;
-  margin-right: 15vh;
-  float: right;
-}
-.link:hover{
-  text-decoration: underline;
-}
-.pro-main {
-  width: 100vh;
 
-  margin: 0 auto;
-  // background-color: rgb(192, 192, 207);
-  margin-top: 5rem;
-  padding: 3em;
-  // position: relative;
-  // top:15vh;
-}
-#verf {
-  // display: flex;
-  width: 100%;
-}
-#verf .el-input {
-  width: 78%;
-  margin-right: 2%;
-}
-#verf .el-button {
-  width: 20%;
-}
-.a {
-  text-align: center;
-}
-#agree {
-  margin: 0 5rem;
-  text-align: center;
-}
-// a:first-child .pro-step {
-//   margin: 80px auto 0;
-//   height: 100px;
-// }
-.clearfix::before,
-.clearfix:after {
-  content: "";
-  display: table;
-}
-.clearfix:after {
-  clear: both;
-}
-.clearfix {
-  /* IE6、7专有 */
-  *zoom: 1;
-}
+
 </style>
