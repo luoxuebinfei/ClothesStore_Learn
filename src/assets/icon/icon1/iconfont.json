@@ -1,0 +1,37 @@
+{
+  "id": "3224590",
+  "name": "毕设-电商网站",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "17967608",
+      "name": "订单",
+      "font_class": "dingdan1",
+      "unicode": "ee91",
+      "unicode_decimal": 61073
+    },
+    {
+      "icon_id": "17967613",
+      "name": "地址",
+      "font_class": "dizhi",
+      "unicode": "ee96",
+      "unicode_decimal": 61078
+    },
+    {
+      "icon_id": "17967649",
+      "name": "购物车",
+      "font_class": "gouwuche1",
+      "unicode": "eeba",
+      "unicode_decimal": 61114
+    },
+    {
+      "icon_id": "17967665",
+      "name": "我的",
+      "font_class": "wode",
+      "unicode": "eeca",
+      "unicode_decimal": 61130
+    }
+  ]
+}

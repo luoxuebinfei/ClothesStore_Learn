@@ -9,6 +9,8 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import './assets/CSS/tailwind.css'
 import './assets/CSS/global.css'
+//引入图标样式
+import './assets/icon/icon1/iconfont.css'
 
 
 
