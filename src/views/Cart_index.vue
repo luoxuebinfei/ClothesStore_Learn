@@ -1,8 +1,11 @@
 <template>
   <!-- 购物车页面 -->
-  <div>
+  <div id="cart">
     <header><Header></Header></header>
     <main>
+      <div class="cart-filter-bar">
+        <div class="switch-cart">全部商品 {{ this.tableData.length }}</div>
+      </div>
       <div class="table">
         <el-table
           ref="multipleTable"
@@ -10,6 +13,7 @@
           tooltip-effect="dark"
           style="width: 100%"
           empty-text="购物车是空的哦~ 快去选购商品吧~"
+          :row-class-name="tableRowClassName"
           @selection-change="handleSelectionChange"
         >
           <el-table-column
@@ -18,7 +22,13 @@
             name="全选"
           ></el-table-column>
           <el-table-column label="商品">
-            <template slot-scope="scope">{{ scope.row.shopname }}</template>
+            <template slot-scope="scope"
+              ><router-link
+                :to="{ name: 'shopInfo', params: { id: scope.row.shopId } }"
+                target="_blank"
+                >{{ scope.row.shopname }}</router-link
+              ></template
+            >
           </el-table-column>
           <el-table-column
             prop="price"
@@ -51,40 +61,62 @@
             prop="sum"
             label="小计"
             width="120"
+            class-name="sum"
             :formatter="
               (value) => {
-                return `￥${((parseFloat(value.price) * value.quantity * 100) /100).toFixed(2)}`;
+                return `￥${(
+                  (parseFloat(value.price) * value.quantity * 100) /
+                  100
+                ).toFixed(2)}`;
               }
             "
             align="center"
           ></el-table-column>
-          <el-table-column
-            prop="name"
-            label="操作"
-            width="120"
-            align="center"
-          ></el-table-column>
+          <el-table-column prop="name" label="操作" width="120" align="center">
+            <template slot-scope="scope"
+              ><el-button type="danger" @click="removeCheck(scope.row)"
+                >删除</el-button
+              ></template
+            ></el-table-column
+          >
         </el-table>
       </div>
-      <div class="cart-floatbar">
-        <el-checkbox v-model="checked" @change="quanxuan">全选</el-checkbox>
-        <div class="operation">
-          <a @click="removeCheck">删除选中的商品</a>
+      <div class="cart-floatbar clearfix">
+        <div class="left">
+          <el-checkbox v-model="checked" @change="quanxuan">全选</el-checkbox>
+          <div class="operation">
+            <a @click="removeCheck(undefined)">删除选中的商品</a>
+          </div>
         </div>
-        <p style="margin-left: 10rem; display: inline">
-          已选择{{ shopNum }}件商品，总计￥{{ shopPriceSum }}元
-        </p>
+
+        <div class="right clearfix">
+          <div class="price-sum">
+            已选择
+            <span style="color: red; font-size: 18px">{{ shopNum }}</span>
+            件商品，总计
+            <span style="color: red; font-size: 18px"
+              >￥{{ shopPriceSum }}</span
+            >
+            元
+          </div>
+          <div class="btn-area">
+            <el-button type="primary">去结算</el-button>
+          </div>
+        </div>
       </div>
     </main>
+    <footer><Footer></Footer></footer>
   </div>
 </template>
 
 <script>
 import Header from "../components/Shop-Header.vue";
+import Footer from "../components/Footer.vue";
 export default {
   name: "Cart_index",
   components: {
     Header,
+    Footer,
   },
   data() {
     return {
@@ -120,6 +152,62 @@ export default {
           quantity: 4, //数量
           shopId: 4, //商品ID
         },
+        {
+          shopname:
+            "OPPO Enco X2真无线入耳式蓝牙耳机 降噪游戏音乐运动耳机 久石让调音 通用苹果华为小米手机 凝霜白",
+          price: "999.00", //单价
+          quantity: 4, //数量
+          shopId: 5, //商品ID
+        },
+        {
+          shopname:
+            "OPPO Enco X2真无线入耳式蓝牙耳机 降噪游戏音乐运动耳机 久石让调音 通用苹果华为小米手机 凝霜白",
+          price: "999.00", //单价
+          quantity: 4, //数量
+          shopId: 6, //商品ID
+        },
+        {
+          shopname:
+            "OPPO Enco X2真无线入耳式蓝牙耳机 降噪游戏音乐运动耳机 久石让调音 通用苹果华为小米手机 凝霜白",
+          price: "999.00", //单价
+          quantity: 4, //数量
+          shopId: 7, //商品ID
+        },
+        {
+          shopname:
+            "OPPO Enco X2真无线入耳式蓝牙耳机 降噪游戏音乐运动耳机 久石让调音 通用苹果华为小米手机 凝霜白",
+          price: "999.00", //单价
+          quantity: 4, //数量
+          shopId: 8, //商品ID
+        },
+        {
+          shopname:
+            "OPPO Enco X2真无线入耳式蓝牙耳机 降噪游戏音乐运动耳机 久石让调音 通用苹果华为小米手机 凝霜白",
+          price: "999.00", //单价
+          quantity: 4, //数量
+          shopId: 9, //商品ID
+        },
+        {
+          shopname:
+            "OPPO Enco X2真无线入耳式蓝牙耳机 降噪游戏音乐运动耳机 久石让调音 通用苹果华为小米手机 凝霜白",
+          price: "999.00", //单价
+          quantity: 4, //数量
+          shopId: 10, //商品ID
+        },
+        {
+          shopname:
+            "OPPO Enco X2真无线入耳式蓝牙耳机 降噪游戏音乐运动耳机 久石让调音 通用苹果华为小米手机 凝霜白",
+          price: "999.00", //单价
+          quantity: 4, //数量
+          shopId: 11, //商品ID
+        },
+        {
+          shopname:
+            "OPPO Enco X2真无线入耳式蓝牙耳机 降噪游戏音乐运动耳机 久石让调音 通用苹果华为小米手机 凝霜白",
+          price: "999.00", //单价
+          quantity: 4, //数量
+          shopId: 12, //商品ID
+        },
       ],
       multipleSelection: [],
     };
@@ -139,23 +227,45 @@ export default {
         ? (this.checked = true)
         : (this.checked = false);
       this.changeNumAndSum(val);
+      if (this.tableData.length == 0) {
+        document.querySelector(".cart-floatbar").style.display = "none";
+      }
     },
     quanxuan: function () {
       //底下的全选按钮
       this.$refs.multipleTable.toggleAllSelection();
     },
     changeNumAndSum() {
-      this.shopNum = this.multipleSelection.length;
-      let n = 0;
+      let n = 0,
+        m = 0;
       this.multipleSelection.forEach((element) => {
-        n = n.add(parseFloat(element.price)*100*element.quantity/100);
+        n = n.add((parseFloat(element.price) * 100 * element.quantity) / 100); //商品总价
+        m += parseInt(element.quantity);
       });
       this.shopPriceSum = n.toFixed(2);
+      this.shopNum = m;
     },
     //删除选中商品
-    removeCheck() {
-      this.tableData = diffrence(this.tableData, this.multipleSelection);
+    removeCheck(row) {
+      if (row != undefined) {
+        //单行删除
+        this.tableData = diffrence(this.tableData, Array(row));
+      } else {
+        //多选删除
+        this.tableData = diffrence(this.tableData, this.multipleSelection);
+      }
+      if (this.tableData.length == 0) {
+        document.querySelector(".cart-floatbar").style.display = "none";
+      }
       //向后端发送请求，将后端用户购物车中数据一并删除
+    },
+    tableRowClassName({ row }) {
+      // 当前选中行id 与 表格的各行比较
+      //如果当前行在已选中的数据中则返回
+      if (this.multipleSelection.some((item) => item === row)) {
+        return "success-row";
+      }
+      return "";
     },
   },
 };
@@ -193,28 +303,5 @@ function diffrence(a, b) {
 </script>
 
 <style lang="scss" scoped>
-main {
-  margin: 0.8rem auto;
-  width: 80%;
-}
-/* 表 */
-.table {
-  width: 100%;
-}
-.table /deep/ .el-input-number--mini {
-  width: 100px;
-}
-/*底部结算栏*/
-.cart-floatbar {
-  height: 50px;
-  position: fixed;
-  bottom: 0;
-}
-.operation {
-  display: inline-block;
-  margin-left: 1rem;
-}
-.operation > a:hover {
-  cursor: pointer;
-}
+@import url("../assets/CSS/cart_index.css");
 </style>
