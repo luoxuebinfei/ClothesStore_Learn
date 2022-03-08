@@ -303,5 +303,110 @@ function diffrence(a, b) {
 </script>
 
 <style lang="scss" scoped>
-@import url("../assets/CSS/cart_index.css");
+/* 购物车页面css */
+#cart {
+    position: relative;
+    min-height: 100%;
+  }
+  header {
+    min-width: 1200px;
+  }
+  main {
+    margin: 0.8rem auto;
+    width: 80%;
+    position: relative;
+    transform: scale3d(1, 1, 1);
+    padding-bottom: 5.5rem;
+  }
+  /* 标头 */
+  .cart-filter-bar {
+    margin-bottom: 0.8rem;
+  }
+  .cart-filter-bar .switch-cart {
+    color: red;
+    font-weight: 700;
+    font-size: 18px;
+  }
+  /* 表 */
+  .table {
+    width: 100%;
+    min-width: 1200px;
+    z-index: 99;
+  }
+  .table /deep/ .el-input-number--mini {
+    width: 100px;
+  }
+  /* 表头设置为灰色 */
+  .table /deep/ thead.has-gutter tr > * {
+    background-color: rgb(243, 243, 243);
+  }
+  /* 选中的行背景色 */
+  .table /deep/ .success-row,.success-row>*:hover {
+    background-color: rgb(255, 244, 232);
+  }
+  /* 商品列表中的文字颜色 */
+  .cell a:hover {
+    color: red;
+  }
+  /* 小计中文字的粗细 */
+  .table /deep/ .sum .cell {
+    font-weight: 700;
+  }
+  
+  /*底部结算栏*/
+  .cart-floatbar {
+    width: 100%;
+    min-width: 1200px;
+    height: 52px;
+    margin: 2rem auto;
+    border: 1px solid rgb(240, 240, 240);
+    background-color: white;
+    z-index: 100;
+    position: sticky;
+    bottom: 0;
+  }
+  .operation {
+    display: inline-block;
+    margin-left: 1rem;
+    font-size: 14px;
+  }
+  .operation > a:hover {
+    cursor: pointer;
+  }
+  .cart-floatbar .left {
+    display: inline-block;
+    margin-left: 0.8rem;
+    /* //垂直居中 */
+    line-height: 52px;
+  }
+  .cart-floatbar .right {
+    display: inline-block;
+    height: 52px;
+    position: absolute;
+    right: 0;
+    top: -1px;
+  }
+  /* //总结文字 */
+  .cart-floatbar .right .price-sum {
+    display: inline-block;
+    font-size: 14px;
+    margin-right: 1rem;
+  }
+  .cart-floatbar .right .btn-area {
+    /* // float: left; */
+    display: inline-block;
+  }
+  .btn-area /deep/ .el-button {
+    height: 52px;
+  }
+  
+  /* 底栏 */
+  footer {
+    position: absolute;
+    min-width: 1200px;
+    height: 5.5rem;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
 </style>
