@@ -177,13 +177,14 @@ main {
   width: 100%;
   min-width: 1366px;
   // background-color: rgb(244, 244, 244);
-  margin: 0.25rem auto;
+  margin: 0.825rem auto;
 }
 main .main {
   width: 85%;
   margin: 0 auto;
   background-color: white;
 }
+
 /*分类导航栏和轮播图*/
 .lc-floor-1 .lc-floor-nav {
   /*导航栏*/
