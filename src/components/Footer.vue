@@ -12,9 +12,6 @@
 <script>
 export default {
     name:"Floor",
-    data() {
-        
-    },
 }
 </script>
 
