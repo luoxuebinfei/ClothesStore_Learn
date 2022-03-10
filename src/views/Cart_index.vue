@@ -21,14 +21,37 @@
             width="55"
             name="全选"
           ></el-table-column>
-          <el-table-column label="商品">
+          <el-table-column
+            label="商品"
+            width="400"
+            class-name="shopname clearfix"
+          >
             <template slot-scope="scope"
-              ><router-link
-                :to="{ name: 'shopInfo', params: { id: scope.row.shopId } }"
-                target="_blank"
-                >{{ scope.row.shopname }}</router-link
-              ></template
-            >
+              ><div class="goods-item clearfix">
+                <div class="p-img">
+                  <router-link
+                    :to="{ name: 'shopInfo', params: { id: scope.row.shopId } }"
+                    target="_blank"
+                    class="clearfix"
+                    :title="scope.row.shopname"
+                    ><img :src="scope.row.imgurl" :alt="scope.row.shopname"
+                  /></router-link>
+                </div>
+                <div class="p-meg">
+                  <router-link
+                    :to="{ name: 'shopInfo', params: { id: scope.row.shopId } }"
+                    target="_blank"
+                    class="clearfix"
+                    :title="scope.row.shopname"
+                    >{{ scope.row.shopname }}</router-link
+                  >
+                </div>
+              </div>
+            </template>
+          </el-table-column>
+          <!-- 规格列 -->
+          <el-table-column prop="props" align="left">
+            <template slot-scope="scope"><div><p>{{scope.row.props.split(" ")[0]}}</p><p>{{scope.row.props.split(" ")[1]}}</p></div></template>
           </el-table-column>
           <el-table-column
             prop="price"
@@ -126,88 +149,24 @@ export default {
       tableData: [
         {
           shopname:
-            "OPPO Enco X2真无线入耳式蓝牙耳机 降噪游戏音乐运动耳机 久石让调音 通用苹果华为小米手机 凝霜白",
-          price: "999.99", //单价
+            "罗蒙(ROMON)夹克男士外套2022春秋季潮流时尚简约纯色工装夹克衫青年商务休闲百搭上衣连帽男装2186黑色XL",
+          price: "190.00", //单价
           quantity: 1, //数量
           shopId: 1, //商品ID
+          props: "黑色 XL", //规格
+          imgurl:
+            "https://img12.360buyimg.com/n0/s80x80_jfs/t1/126155/14/20958/120747/62071461E84cefe0a/39c5a54a2b855b4c.jpg.dpg", //图片链接
         },
         {
           shopname:
-            "OPPO Enco X2真无线入耳式蓝牙耳机 降噪游戏音乐运动耳机 久石让调音 通用苹果华为小米手机 凝霜白",
-          price: "999.00", //单价
+            "雅鹿 男士棉衣 2021冬季男士青年时尚简约百搭纯色宽松保暖立领棉衣 19781012 黑色 175/XL",
+          price: "158.00", //单价
           quantity: 1, //数量
           shopId: 2, //商品ID
+          props:"黑色 175/XL",
+          imgurl:"https://img12.360buyimg.com/n0/s80x80_jfs/t1/115912/7/19734/103753/5f81a091E9e6aa2a0/2baec75362bd45a6.jpg.dpg",
         },
-        {
-          shopname:
-            "OPPO Enco X2真无线入耳式蓝牙耳机 降噪游戏音乐运动耳机 久石让调音 通用苹果华为小米手机 凝霜白",
-          price: "999.00", //单价
-          quantity: 3, //数量
-          shopId: 3, //商品ID
-        },
-        {
-          shopname:
-            "OPPO Enco X2真无线入耳式蓝牙耳机 降噪游戏音乐运动耳机 久石让调音 通用苹果华为小米手机 凝霜白",
-          price: "999.00", //单价
-          quantity: 4, //数量
-          shopId: 4, //商品ID
-        },
-        {
-          shopname:
-            "OPPO Enco X2真无线入耳式蓝牙耳机 降噪游戏音乐运动耳机 久石让调音 通用苹果华为小米手机 凝霜白",
-          price: "999.00", //单价
-          quantity: 4, //数量
-          shopId: 5, //商品ID
-        },
-        {
-          shopname:
-            "OPPO Enco X2真无线入耳式蓝牙耳机 降噪游戏音乐运动耳机 久石让调音 通用苹果华为小米手机 凝霜白",
-          price: "999.00", //单价
-          quantity: 4, //数量
-          shopId: 6, //商品ID
-        },
-        {
-          shopname:
-            "OPPO Enco X2真无线入耳式蓝牙耳机 降噪游戏音乐运动耳机 久石让调音 通用苹果华为小米手机 凝霜白",
-          price: "999.00", //单价
-          quantity: 4, //数量
-          shopId: 7, //商品ID
-        },
-        {
-          shopname:
-            "OPPO Enco X2真无线入耳式蓝牙耳机 降噪游戏音乐运动耳机 久石让调音 通用苹果华为小米手机 凝霜白",
-          price: "999.00", //单价
-          quantity: 4, //数量
-          shopId: 8, //商品ID
-        },
-        {
-          shopname:
-            "OPPO Enco X2真无线入耳式蓝牙耳机 降噪游戏音乐运动耳机 久石让调音 通用苹果华为小米手机 凝霜白",
-          price: "999.00", //单价
-          quantity: 4, //数量
-          shopId: 9, //商品ID
-        },
-        {
-          shopname:
-            "OPPO Enco X2真无线入耳式蓝牙耳机 降噪游戏音乐运动耳机 久石让调音 通用苹果华为小米手机 凝霜白",
-          price: "999.00", //单价
-          quantity: 4, //数量
-          shopId: 10, //商品ID
-        },
-        {
-          shopname:
-            "OPPO Enco X2真无线入耳式蓝牙耳机 降噪游戏音乐运动耳机 久石让调音 通用苹果华为小米手机 凝霜白",
-          price: "999.00", //单价
-          quantity: 4, //数量
-          shopId: 11, //商品ID
-        },
-        {
-          shopname:
-            "OPPO Enco X2真无线入耳式蓝牙耳机 降噪游戏音乐运动耳机 久石让调音 通用苹果华为小米手机 凝霜白",
-          price: "999.00", //单价
-          quantity: 4, //数量
-          shopId: 12, //商品ID
-        },
+        
       ],
       multipleSelection: [],
     };
@@ -305,108 +264,127 @@ function diffrence(a, b) {
 <style lang="scss" scoped>
 /* 购物车页面css */
 #cart {
-    position: relative;
-    min-height: 100%;
-  }
-  header {
-    min-width: 1200px;
-  }
-  main {
-    margin: 0.8rem auto;
-    width: 80%;
-    position: relative;
-    transform: scale3d(1, 1, 1);
-    padding-bottom: 5.5rem;
-  }
-  /* 标头 */
-  .cart-filter-bar {
-    margin-bottom: 0.8rem;
-  }
-  .cart-filter-bar .switch-cart {
-    color: red;
-    font-weight: 700;
-    font-size: 18px;
-  }
-  /* 表 */
-  .table {
-    width: 100%;
-    min-width: 1200px;
-    z-index: 99;
-  }
-  .table /deep/ .el-input-number--mini {
-    width: 100px;
-  }
-  /* 表头设置为灰色 */
-  .table /deep/ thead.has-gutter tr > * {
-    background-color: rgb(243, 243, 243);
-  }
-  /* 选中的行背景色 */
-  .table /deep/ .success-row,.success-row>*:hover {
-    background-color: rgb(255, 244, 232);
-  }
-  /* 商品列表中的文字颜色 */
-  .cell a:hover {
-    color: red;
-  }
-  /* 小计中文字的粗细 */
-  .table /deep/ .sum .cell {
-    font-weight: 700;
-  }
-  
-  /*底部结算栏*/
-  .cart-floatbar {
-    width: 100%;
-    min-width: 1200px;
-    height: 52px;
-    margin: 2rem auto;
-    border: 1px solid rgb(240, 240, 240);
-    background-color: white;
-    z-index: 100;
-    position: sticky;
-    bottom: 0;
-  }
-  .operation {
-    display: inline-block;
-    margin-left: 1rem;
-    font-size: 14px;
-  }
-  .operation > a:hover {
-    cursor: pointer;
-  }
-  .cart-floatbar .left {
-    display: inline-block;
-    margin-left: 0.8rem;
-    /* //垂直居中 */
-    line-height: 52px;
-  }
-  .cart-floatbar .right {
-    display: inline-block;
-    height: 52px;
-    position: absolute;
-    right: 0;
-    top: -1px;
-  }
-  /* //总结文字 */
-  .cart-floatbar .right .price-sum {
-    display: inline-block;
-    font-size: 14px;
-    margin-right: 1rem;
-  }
-  .cart-floatbar .right .btn-area {
-    /* // float: left; */
-    display: inline-block;
-  }
-  .btn-area /deep/ .el-button {
-    height: 52px;
-  }
-  
-  /* 底栏 */
-  footer {
-    position: absolute;
-    min-width: 1200px;
-    height: 5.5rem;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
+  position: relative;
+  min-height: 100%;
+}
+header {
+  min-width: 1200px;
+}
+main {
+  margin: 0.8rem auto;
+  width: 80%;
+  position: relative;
+  transform: scale3d(1, 1, 1);
+  padding-bottom: 5.5rem;
+}
+/* 标头 */
+.cart-filter-bar {
+  margin-bottom: 0.8rem;
+}
+.cart-filter-bar .switch-cart {
+  color: red;
+  font-weight: 700;
+  font-size: 18px;
+}
+/* 表 */
+.table {
+  width: 100%;
+  min-width: 1200px;
+  z-index: 99;
+}
+.table /deep/ .el-input-number--mini {
+  width: 100px;
+}
+/* 表头设置为灰色 */
+.table /deep/ thead.has-gutter tr > * {
+  background-color: rgb(243, 243, 243);
+}
+/* 选中的行背景色 */
+.table /deep/ .success-row,
+.success-row > *:hover {
+  background-color: rgb(255, 244, 232);
+}
+/* 商品列表中的文字颜色 */
+.cell a:hover {
+  color: red;
+}
+/* 商品列中文字换行 */
+.table .goods-item .p-meg {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /*（行数）*/
+  -webkit-box-orient: vertical;
+}
+/* 商品列表中图片和文字并排 */
+.table .goods-item{
+  float: left;
+  margin: 12px auto;
+}
+.table .goods-item .p-img{
+  float: left;
+  margin-right: 1rem;
+}
+
+/* 小计中文字的粗细 */
+.table /deep/ .sum .cell {
+  font-weight: 700;
+}
+
+/*底部结算栏*/
+.cart-floatbar {
+  width: 100%;
+  min-width: 1200px;
+  height: 52px;
+  margin: 2rem auto;
+  border: 1px solid rgb(240, 240, 240);
+  background-color: white;
+  z-index: 100;
+  position: sticky;
+  bottom: 0;
+}
+.operation {
+  display: inline-block;
+  margin-left: 1rem;
+  font-size: 14px;
+}
+.operation > a:hover {
+  cursor: pointer;
+}
+.cart-floatbar .left {
+  display: inline-block;
+  margin-left: 0.8rem;
+  /* //垂直居中 */
+  line-height: 52px;
+}
+.cart-floatbar .right {
+  display: inline-block;
+  height: 52px;
+  position: absolute;
+  right: 0;
+  top: -1px;
+}
+/* //总结文字 */
+.cart-floatbar .right .price-sum {
+  display: inline-block;
+  font-size: 14px;
+  margin-right: 1rem;
+}
+.cart-floatbar .right .btn-area {
+  /* // float: left; */
+  display: inline-block;
+}
+.btn-area /deep/ .el-button {
+  height: 52px;
+}
+
+/* 底栏 */
+footer {
+  position: absolute;
+  min-width: 1200px;
+  height: 5.5rem;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
 </style>
