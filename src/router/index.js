@@ -6,6 +6,7 @@ import Register from "../views/register";
 import UserHome from "../views/UserHome";
 import Cart_index from "../views/Cart_index";
 import ShopInfo from "../views/ShopInfo";
+import Mall from "../views/Mall";
 
 
 Vue.use(VueRouter)
@@ -39,6 +40,11 @@ const routes = [{
     path: '/shopinfo/:id',
     name: 'shopInfo',
     component:ShopInfo
+  },
+  {
+    path: '/mall/:id',
+    name: 'mall',
+    component:Mall
   }
 ]
 
