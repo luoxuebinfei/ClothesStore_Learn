@@ -3,69 +3,151 @@
   <div>
     <header><Header></Header></header>
     <main>
-      <div class="product-intro clearfix">
-        <div class="preview-wrap">
-          <el-carousel indicator-position="outside">
-            <el-carousel-item v-for="item in specImages" :key="item">
-              <img :src="item" alt="轮播图" />
-            </el-carousel-item>
-          </el-carousel>
-        </div>
-        <div class="itemInfo-wrap">
-          <div class="sku-name">{{ skuName }}</div>
-          <div class="summary">
-            <div class="summary-price clearfix">
-              <div class="dt">京 东 价</div>
-              <div class="dd">￥158.00</div>
-            </div>
-            <div class="summary-stock clearfix">
-              <div class="dt">配 送 至</div>
-              <div class="dd">
-                <el-select
-                  v-model="areaId"
-                  filterable
-                  allow-create
-                  default-first-option
-                  placeholder="请选择配送地址"
-                >
-                  <el-option
-                    v-for="item of areaData"
-                    :key="item.areaId"
-                    :label="item.areaText"
-                    :value="item.areaId"
+      <div class="w">
+        <div class="product-intro clearfix">
+          <div class="preview-wrap">
+            <el-carousel indicator-position="outside">
+              <el-carousel-item v-for="item in specImages" :key="item">
+                <img :src="item" alt="轮播图" />
+              </el-carousel-item>
+            </el-carousel>
+          </div>
+          <div class="itemInfo-wrap">
+            <div class="sku-name">{{ skuName }}</div>
+            <div class="summary">
+              <div class="summary-price clearfix">
+                <div class="dt">价&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;格</div>
+                <div class="dd">￥158.00</div>
+              </div>
+              <div class="summary-stock clearfix">
+                <div class="dt">配 送 至</div>
+                <div class="dd">
+                  <el-select
+                    v-model="areaId"
+                    filterable
+                    allow-create
+                    default-first-option
+                    placeholder="请选择配送地址"
                   >
-                    <span style="float: left">{{ item.areaText }}</span>
-                    <span
-                      style="margin-left: 15px; color: #8492a6; font-size: 13px"
-                      >({{ item.areaId }})</span
+                    <el-option
+                      v-for="item of areaData"
+                      :key="item.areaId"
+                      :label="item.areaText"
+                      :value="item.areaId"
                     >
-                    <router-link to="\login" style="display: block"
-                      >新增地址</router-link
-                    >
-                  </el-option>
-                </el-select>
-                <router-link
-                  to=""
-                  style="color: #666; margin-left: 1rem; font-size: 16px"
-                  >新增地址</router-link
-                >
+                      <span style="float: left">{{ item.areaText }}</span>
+                      <span
+                        style="
+                          margin-left: 15px;
+                          color: #8492a6;
+                          font-size: 13px;
+                        "
+                        >({{ item.areaId }})</span
+                      >
+                    </el-option>
+                  </el-select>
+                  <div class="stock" v-if="attrs.stock">有货</div>
+                  <div class="stock" v-else>无货</div>
+                  <router-link
+                    to=""
+                    style="color: #666; margin-left: 1rem; font-size: 16px"
+                    >新增地址</router-link
+                  >
+                </div>
+              </div>
+              <div class="summary-weight clearfix">
+                <div class="dt">重&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量</div>
+                <div class="dd">{{ weight }}</div>
               </div>
             </div>
-            <div class="summary-weight clearfix">
-              <div class="dt">重&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量</div>
-              <div class="dd">{{ weight }}</div>
-            </div>
-          </div>
-          <div class="choose-attrs">
-            <div id="choose-attr-1">
-              <div class="dt">选择颜色</div>
-              <div class="dd">
-                <div v-for="i of attrs.color" :key="i" class="item" v-bind:class="{selected:i.stock,disabled:!i.stock}" :data-sku="i.skuid" :title="i.text">
-                  <router-link :to="{name:'shopInfo',params:{id:i.skuid}}"><img :src="i.imgurl" :alt="i.text" width="40px" height="40px"><i>{{i.text}}</i></router-link>
+            <div class="choose-attrs">
+              <div id="choose-attr-1" class="li clearfix">
+                <div class="dt">选择颜色</div>
+                <div class="dd">
+                  <div
+                    v-for="i of attrs.color"
+                    :key="i.skuid"
+                    class="item"
+                    v-bind:class="{ disabled: !i.stock }"
+                    :data-sku="i.skuid"
+                    :title="i.text"
+                  >
+                    <router-link
+                      :to="{ name: 'shopInfo', params: { id: i.skuid } }"
+                      ><img
+                        :src="i.imgurl"
+                        :alt="i.text"
+                        width="40px"
+                        height="40px"
+                      /><i>{{ i.text }}</i></router-link
+                    >
+                  </div>
+                </div>
+              </div>
+              <div id="choose-attr-2" class="li clearfix">
+                <div class="dt">选择尺码</div>
+                <div class="dd">
+                  <div
+                    v-for="i of attrs.size"
+                    :key="i.skuid"
+                    class="item"
+                    v-bind:class="{ disabled: !i.stock }"
+                    :data-sku="i.skuid"
+                    :title="i.text"
+                  >
+                    <router-link
+                      :to="{ name: 'shopInfo', params: { id: i.skuid } }"
+                      ><i>{{ i.text }}</i></router-link
+                    >
+                  </div>
                 </div>
               </div>
             </div>
-            <div id="choose-attr-2"></div>
+            <div id="choose-btns" class="clearfix">
+              <div class="choose-amount">
+                <!-- 购买数量 -->
+                <el-input-number
+                  v-model="buyNum"
+                  controls-position="right"
+                  @change="queryStock"
+                  :min="1"
+                ></el-input-number>
+              </div>
+              <div class="btn-special1">
+                <el-button>加入购物车</el-button>
+              </div>
+              <div class="btn-buy">
+                <el-button>立即购买</el-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="w">
+        <!-- 店铺、详情、评论 -->
+        <div class="aside">
+          <div class="popbox-inner">
+            <div class="mt">
+              <h3>
+                <router-link
+                  :to="{ name: 'mall', params: { id: shopId } }"
+                  target="_blank"
+                  :title="shopName"
+                  >{{ shopName }}</router-link
+                >
+              </h3>
+            </div>
+            <div class="mc">
+              <div class="btns">
+                <router-link
+                  :to="{ name: 'mall', params: { id: shopId } }"
+                  target="_blank"
+                  :title="shopName"
+                  >进店逛逛</router-link
+                >
+                <a href="/"></a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -107,7 +189,36 @@ export default {
         },
       ],
       weight: "0.5kg",
-      attrs:{color:[{skuid:"1",text:"黑色",stock:true,imgurl:"https://img13.360buyimg.com/n9/s40x40_jfs/t1/115912/7/19734/103753/5f81a091E9e6aa2a0/2baec75362bd45a6.jpg"},{skuid:"2",text:"墨绿",stock:true,imgurl:"https://img10.360buyimg.com/n9/s40x40_jfs/t1/132882/23/11610/92928/5f81a0d7Ecb468728/34f5f0e17aefc520.jpg"}],size:[]}
+      attrs: {
+        color: [
+          {
+            skuid: "1",
+            text: "黑色",
+            stock: true,
+            isChecked: true,
+            imgurl:
+              "https://img13.360buyimg.com/n9/s40x40_jfs/t1/115912/7/19734/103753/5f81a091E9e6aa2a0/2baec75362bd45a6.jpg",
+          },
+          {
+            skuid: "2",
+            text: "墨绿",
+            stock: false,
+            isChecked: false,
+            imgurl:
+              "https://img10.360buyimg.com/n9/s40x40_jfs/t1/132882/23/11610/92928/5f81a0d7Ecb468728/34f5f0e17aefc520.jpg",
+          },
+        ],
+        size: [
+          { skuid: "3", text: "170/L", stock: true, isChecked: false },
+          { skuid: "4", text: "175/XL", stock: true, isChecked: false },
+          { skuid: "1", text: "180/2XL", stock: true, isChecked: true },
+          { skuid: "5", text: "190/4XL", stock: true, isChecked: false },
+        ],
+        stock: true,
+      },
+      buyNum: 1, //购买数量
+      shopName: "雅鹿服装自营旗舰店", //店铺名字
+      shopId: 1, //店铺id
     };
   },
   methods: {
@@ -123,10 +234,23 @@ export default {
         a[i].appendChild(img);
       }
     },
+    //根据本页面skuid选中相应的选项
+    setChooseAttrClassName: function () {
+      var skuid = window.location.pathname.split("/")[2];
+      var items = document.querySelectorAll(".item");
+      items.forEach((element) => {
+        if (element.getAttribute("data-sku") == skuid) {
+          element.className = "item selected";
+        }
+      });
+    },
+    //库存查询，更新attrs数据
+    queryStock: function () {},
   },
   mounted() {
     //在完全加载后再执行函数
     this.$nextTick(() => this.indicatorToimage());
+    this.$nextTick(() => this.setChooseAttrClassName());
   },
 };
 </script>
@@ -135,10 +259,10 @@ export default {
 main {
   margin: 0.8rem auto;
 }
-i{
+i {
   font-style: normal;
 }
-.product-intro {
+.w {
   width: 80%;
   margin: 0 auto;
 }
@@ -175,6 +299,13 @@ i{
 .summary-weight {
   padding: 1rem 0.5rem;
 }
+/* 库存信息样式 */
+.summary-stock .stock {
+  display: inline-block;
+  color: rgb(155, 153, 153);
+  font-size: 14px;
+  margin-left: 1rem;
+}
 .summary .dt {
   float: left;
   font-size: 14px;
@@ -202,7 +333,7 @@ i{
   line-height: 20px;
 }
 /* 选择栏 */
-.choose-attrs{
+.choose-attrs {
   padding: 1rem 0.5rem;
 }
 .choose-attrs .dt {
@@ -216,26 +347,82 @@ i{
   padding: 0 12px;
   font-size: 22px;
   color: #666;
-  
 }
-.choose-attrs .item{
+.li .item {
   float: left;
   margin-right: 1rem;
-  font-size: 16px;
+  font-size: 14px;
+  line-height: 40px;
   background-color: #f7f7f7;
+  border: 1px solid rgb(204, 204, 204);
+  margin-right: 7px;
+  margin-bottom: 8px;
 }
-.choose-attrs .item img,i{
+/* 滑到上面边框变红 */
+.item:hover {
+  border: 1px solid red;
+}
+.choose-attrs .item img,
+i {
   display: inline-block;
-  
 }
-.choose-attrs .item i{
+.choose-attrs .item i {
   margin: 0 8px;
 }
-/* 选择栏有货无货样式 */
-// {
-//   border: 1px solid red;
-// }
-.choose-attrs .disabled {
+/* 选择栏无货样式 */
+.disabled,
+.disabled:hover {
   border: 1px dashed rgb(204, 204, 204);
+  /* 鼠标禁止点击 */
+  pointer-events: none;
+  cursor: default;
+  opacity: 0.6;
+}
+/* 选择栏选中样式 */
+.selected {
+  border: 1px solid red !important;
+}
+
+/* 购买栏样式 */
+// #choose-btns{
+//   display: flex;
+// }
+#choose-btns .choose-amount {
+  float: left;
+  margin-right: 1rem;
+}
+#choose-btns .choose-amount .el-input-number {
+  width: 120px;
+}
+#choose-btns .btn-special1 {
+  /* 加入购物车按钮 */
+  float: left;
+  margin-right: 1rem;
+}
+#choose-btns .btn-special1 .el-button {
+  background-color: rgb(98, 153, 54);
+  color: white;
+  font-weight: 700;
+}
+#choose-btns .btn-buy {
+  /* 购买按钮 */
+  float: left;
+}
+#choose-btns .btn-buy .el-button {
+  background-color: red;
+  color: white;
+  font-weight: 700;
+}
+/* 店铺 */
+.popbox-inner {
+  width: 180px;
+}
+.popbox-inner .mt {
+  text-align: center;
+  background-color: rgb(245, 245, 245);
+  padding: 10px;
+}
+.popbox-inner .mc {
+  padding: 10px;
 }
 </style>
