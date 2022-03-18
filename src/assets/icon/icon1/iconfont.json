@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "11542832",
+      "name": "待付款",
+      "font_class": "daifukuan",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "11542833",
+      "name": "待发货",
+      "font_class": "daifahuo",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "11542862",
+      "name": "已完成",
+      "font_class": "yiwancheng",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
       "icon_id": "17967608",
       "name": "订单",
       "font_class": "dingdan1",
