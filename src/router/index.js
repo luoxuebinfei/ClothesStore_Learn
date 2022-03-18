@@ -7,6 +7,8 @@ import UserHome from "../views/UserHome";
 import Cart_index from "../views/Cart_index";
 import ShopInfo from "../views/ShopInfo";
 import Mall from "../views/Mall";
+import Search from "../views/Search";
+import Order from "../views/Order";
 
 
 Vue.use(VueRouter)
@@ -45,7 +47,17 @@ const routes = [{
     path: '/mall/:id',
     name: 'mall',
     component:Mall
-  }
+  },
+  {
+    path: '/search',
+    name: 'search',
+    component:Search
+  },
+  {
+    path: '/order',
+    name: 'order',
+    component:Order
+  },
 ]
 
 const router = new VueRouter({

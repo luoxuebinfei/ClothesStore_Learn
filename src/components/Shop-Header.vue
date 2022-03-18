@@ -15,7 +15,7 @@
     <div class="shortcut clearfix">
       <ul>
         <li><a href="/home"><el-button icon="iconfont icon-wode" title="个人中心"></el-button></a></li>
-        <li><el-button icon="iconfont icon-dingdan" title="订单"></el-button></li>
+        <li><a href="/order"><el-button icon="iconfont icon-dingdan" title="订单"></el-button></a></li>
         <!-- <li><el-button icon="iconfont icon-wode" title="个人中心"></el-button></li> -->
         <li><a href="/cart_index"><el-button icon="iconfont icon-gouwuche" title="购物车"></el-button></a></li>
       </ul>
@@ -93,7 +93,7 @@ export default {
 .shortcut ul>li{
   list-style: none;
   float: right;
-  
+  transform: scale(1.3);
   margin: 0 1.5rem;
 }
 .shortcut /deep/ .el-button,.el-button:hover,.el-button:active{
