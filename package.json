@@ -35,8 +35,7 @@
       "node": true
     },
     "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
+      "plugin:vue/essential"
     ],
     "parserOptions": {
       "parser": "babel-eslint"
@@ -49,3 +48,4 @@
     "not dead"
   ]
 }
+    // 去除了原本的"extends": "eslint:recommended"防止空块语句报错
