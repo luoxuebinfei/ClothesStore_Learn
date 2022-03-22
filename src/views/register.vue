@@ -39,23 +39,31 @@
           </div>
           <div class="form-ForgotPass" v-show="!ishidden">
             <div class="login-from-title">用户注册</div>
-            <el-form ref="form" :model="form" label-width="80px">
+            <el-form ref="form" :model="form" label-width="80px" :rules="rules">
               <el-input v-model="form.userName" placeholder="昵称"
                 ><i slot="prefix" class="el-input__icon el-icon-message"></i
               ></el-input>
               <div class="verification">
-                <el-input
-                  v-model="form.password"
-                  placeholder="密码"
-                  maxlength="10"
-                  show-password><i slot="prefix" class="el-input__icon el-icon-lock"></i
-                ></el-input>
-                <el-input
-                  v-model="form.confirmPass"
-                  placeholder="确认密码"
-                  maxlength="10"
-                  show-password><i slot="prefix" class="el-input__icon el-icon-lock"></i
-                ></el-input>
+                <el-form-item prop="pass">
+                  <el-input
+                    v-model="form.pass"
+                    placeholder="密码"
+                    maxlength="10"
+                    show-password
+                    autocomplete="off"
+                    ><i slot="prefix" class="el-input__icon el-icon-lock"></i
+                  ></el-input>
+                </el-form-item>
+                <el-form-item prop="checkPass" style="margin-left: 0px">
+                  <el-input
+                    v-model="form.checkPass"
+                    placeholder="确认密码"
+                    maxlength="10"
+                    show-password
+                    autocomplete="off"
+                    ><i slot="prefix" class="el-input__icon el-icon-lock"></i
+                  ></el-input>
+                </el-form-item>
               </div>
               <div class="abreast-input">
                 <el-button
@@ -64,7 +72,7 @@
                   id="return-button"
                   >上一步</el-button
                 >
-                <el-button type="primary">完成注册</el-button>
+                <el-button type="primary" @click="zhuce">完成注册</el-button>
               </div>
             </el-form>
           </div>
@@ -87,6 +95,25 @@
 export default {
   name: "register",
   data() {
+    var validatePass = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入密码"));
+      } else {
+        if (this.form.checkPass !== "") {
+          this.$refs.form.validateField("checkPass");
+        }
+        callback();
+      }
+    };
+    var validatePass2 = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请再次输入密码"));
+      } else if (value !== this.form.pass) {
+        callback(new Error("两次输入密码不一致!"));
+      } else {
+        callback();
+      }
+    };
     return {
       ishidden: true,
       forgot_text: "忘记密码?",
@@ -99,11 +126,15 @@ export default {
       // 定时器
       timer: null,
       form: {
-        emailAdress: "",
+        emailAddress: "",
         userName: "", //用户昵称
-        password: "",
+        pass: "",
         verification: "", //验证码
-        confirmPass: "", //确认密码
+        checkPass: "", //确认密码
+      },
+      rules: {
+        password: [{ validator: validatePass, trigger: "blur" }],
+        checkPass: [{ validator: validatePass2, trigger: "blur" }],
       },
     };
   },
@@ -118,6 +149,7 @@ export default {
       //获取验证码
       if (!this.timer) {
         this.codeDisabled = true; //按钮设置为不可用
+        let _this = this;
         this.timer = setInterval(() => {
           if (this.countdown >= 0 && this.countdown <= 60) {
             this.countdown--;
@@ -133,6 +165,9 @@ export default {
             this.codeDisabled = false;
           }
         }, 1000);
+        this.$axios.get("/get_email_code", {
+          params: { email: _this.form.emailAddress },
+        });
       }
     },
     mouseMove: function (e) {
@@ -153,8 +188,53 @@ export default {
       document.querySelector(".login100-pic").style.transform =
         "perspective(300px) rotateX(0deg) rotateY(0deg)";
     },
+    zhuce: function () {
+      let email_ = this.form.emailAddress;
+      let code_ = this.form.verification;
+      let name = this.form.userName;
+      let paw = this.form.pass;
+      let paw_ = this.form.checkPass;
+      let _this = this;
+      this.$confirm("即将注册xx商城，是否继续？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.$axios
+            .post("/register", {
+              email: email_,
+              code: code_,
+              username: name,
+              password: paw,
+            })
+            .then((res) => {
+              if (res.data.msg === "注册成功！") {
+                this.$message({
+                  type: "success",
+                  message: "注册成功！",
+                });
+                //登录成功后跳转到首页
+                setTimeout(()=>{this.$router.push({ path: "/" })},3000);
+              }
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消注册",
+          });
+        });
+    },
   },
-  mounted() {},
+  mounted() {
+    //解决el-form-item左边距的问题
+    document
+      .querySelectorAll(".verification .el-form-item__content")
+      .forEach((e) => {
+        e.style.marginLeft = "";
+      });
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -162,6 +242,15 @@ export default {
 .background {
   background-image: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
 }
-
-
+/* el-form-item调整 */
+.verification .el-form-item {
+  margin-bottom: 0;
+}
+/* 校验错误 */
+.verification .el-form-item.is-error {
+  margin-bottom: 20px;
+}
+.verification /deep/ .el-form-item__error {
+  right: 0;
+}
 </style>

@@ -14,7 +14,8 @@
     "element-ui": "^2.15.6",
     "node-sass": "^4.14.1",
     "vue": "^2.6.11",
-    "vue-router": "^3.5.3"
+    "vue-router": "^3.5.3",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -48,4 +49,3 @@
     "not dead"
   ]
 }
-    // 去除了原本的"extends": "eslint:recommended"防止空块语句报错
