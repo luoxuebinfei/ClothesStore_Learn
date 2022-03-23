@@ -22,4 +22,11 @@ router.beforeEach((to, from, next) => {
     } else {
         next()
     }
+    if (to.path == '/login') {
+        //保存当前路由
+        localStorage.setItem("preRoute", router.currentRoute.fullPath)
+    } else {
+        next()
+    }
+
 })
