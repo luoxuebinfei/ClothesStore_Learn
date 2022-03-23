@@ -12,7 +12,7 @@ import './assets/icon/icon1/iconfont.css';
 //引入懒加载方法
 import LazyLoad from "@/assets/JS/LazyLoad";
 
-import store from 'vuex'
+import store from './store'
 import axios from 'axios'
 import "./axios.js"
 

@@ -17,13 +17,13 @@
                 ><i slot="prefix" class="el-input__icon el-icon-message"></i
               ></el-input>
               <el-input
-                v-model="form.password"
+                v-model="form.pass"
                 type="password"
                 placeholder="密码"
                 show-password
                 ><i slot="prefix" class="el-input__icon el-icon-lock"></i
               ></el-input>
-              <el-button type="primary">立即登录</el-button>
+              <el-button type="primary" @click="postLogin">立即登录</el-button>
             </el-form>
           </div>
           <div class="form-ForgotPass" v-show="ishidden === 2">
@@ -37,6 +37,7 @@
                   v-model="form.verification"
                   placeholder="验证码"
                   maxlength="6"
+                  @click="getCode"
                   ><i slot="prefix" class="el-input__icon el-icon-key"></i
                   ><el-button
                     type="text"
@@ -52,21 +53,29 @@
           </div>
           <div class="form-ForgotPass" v-show="ishidden === 3">
             <div class="login-from-title">重置密码</div>
-            <el-form ref="form" :model="form" label-width="80px">
-              <el-input
-                v-model="form.password"
-                placeholder="密码"
-                maxlength="10"
-                show-password
-                ><i slot="prefix" class="el-input__icon el-icon-lock"></i
-              ></el-input>
-              <el-input
-                v-model="form.confirmPass"
-                placeholder="确认密码"
-                maxlength="10"
-                show-password
-                ><i slot="prefix" class="el-input__icon el-icon-lock"></i
-              ></el-input>
+            <el-form ref="form" :model="form" label-width="80px" :rules="rules">
+              <div class="verification">
+                <el-form-item prop="pass">
+                  <el-input
+                    v-model="form.pass"
+                    placeholder="密码"
+                    maxlength="10"
+                    show-password
+                    autocomplete="off"
+                    ><i slot="prefix" class="el-input__icon el-icon-lock"></i
+                  ></el-input>
+                </el-form-item>
+                <el-form-item prop="checkPass">
+                  <el-input
+                    v-model="form.checkPass"
+                    placeholder="确认密码"
+                    maxlength="10"
+                    show-password
+                    autocomplete="off"
+                    ><i slot="prefix" class="el-input__icon el-icon-lock"></i
+                  ></el-input>
+                </el-form-item>
+              </div>
 
               <div class="abreast-input">
                 <el-button
@@ -75,7 +84,7 @@
                   id="return-button"
                   >上一步</el-button
                 >
-                <el-button type="primary">完成</el-button>
+                <el-button type="primary" @click="resetPaw">完成</el-button>
               </div>
             </el-form>
           </div>
@@ -101,6 +110,25 @@
 export default {
   name: "Login",
   data() {
+    var validatePass = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入密码"));
+      } else {
+        if (this.form.checkPass !== "") {
+          this.$refs.form.validateField("checkPass");
+        }
+        callback();
+      }
+    };
+    var validatePass2 = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请再次输入密码"));
+      } else if (value !== this.form.pass) {
+        callback(new Error("两次输入密码不一致!"));
+      } else {
+        callback();
+      }
+    };
     return {
       ishidden: 1,
       forgot_text: "忘记密码?",
@@ -113,9 +141,14 @@ export default {
       // 定时器
       timer: null,
       form: {
-        emailAdress: "",
-        password: "",
+        emailAddress: "",
+        pass: "",
+        checkPass: "",
         verification: "", //验证码
+      },
+      rules: {
+        password: [{ validator: validatePass, trigger: "blur" }],
+        checkPass: [{ validator: validatePass2, trigger: "blur" }],
       },
     };
   },
@@ -135,6 +168,7 @@ export default {
     getCode: function () {
       //获取验证码
       if (!this.timer) {
+        if (this.form.emailAddres == "") return;
         this.codeDisabled = true; //按钮设置为不可用
         this.timer = setInterval(() => {
           if (this.countdown >= 0 && this.countdown <= 60) {
@@ -151,6 +185,9 @@ export default {
             this.codeDisabled = false;
           }
         }, 1000);
+        this.$axios.get("/get_email_code", {
+          params: { email: this.form.emailAddress },
+        });
       }
     },
     mouseMove: function (e) {
@@ -174,10 +211,114 @@ export default {
       document.querySelector(".login100-pic").style.transform =
         "perspective(300px) rotateX(0deg) rotateY(0deg)";
     },
+    //登录
+    postLogin() {
+      let email = this.form.emailAddress;
+      let paw = this.form.pass;
+      let _this = this;
+      if (email == "" || paw == "") return;
+      this.$confirm("即将登录，是否继续？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.$axios
+            .post("/login", {
+              email: email,
+              paw: paw,
+            })
+            .then((res) => {
+              if (res.data.msg === "登录成功！") {
+                const jwt = res.headers["authorization"];
+                const userinfo = res.data.data.userinfo;
+                _this.$store.commit("SET_TOKEN", jwt);
+                _this.$store.commit("SET_USERINFO", userinfo);
+                this.$message({
+                  type: "success",
+                  message: "登录成功！",
+                });
+                setTimeout(() => {
+                  //跳转到登录前的页面
+                  const curr = localStorage.getItem("preRoute");
+                  if (curr == null) {
+                    this.$router.push({ path: "/" });
+                  } else {
+                    this.$router.push({ path: curr });
+                  }
+                }, 3000);
+              }
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消登录",
+          });
+        });
+    },
+    //重置密码
+    resetPaw() {
+      let email = this.form.emailAddress;
+      let code = this.form.verification;
+      let paw = this.form.pass;
+      let checkPass = this.form.checkPass;
+      let _this = this;
+      if (email == "" || code == "" || paw == "" || checkPass == "") {
+        return;
+      }
+      this.$confirm("即将重置密码，是否继续？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          _this.$axios
+            .post("/reset_Password", {
+              email: email,
+              code: code,
+              password: paw,
+            })
+            .then((res) => {
+              if (res.data.code == 200) {
+                this.$message({
+                  type: "success",
+                  message: "密码重置成功！",
+                });
+                setTimeout(()=>{_this.$router.go(0);},3000);
+              }
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "取消重置密码",
+          });
+        });
+    },
   },
-  mounted() {},
+  mounted() {
+    //解决el-form-item左边距的问题
+    document
+      .querySelectorAll(".verification .el-form-item__content")
+      .forEach((e) => {
+        e.style.marginLeft = "";
+      });
+  },
 };
 </script>
 <style lang="scss" scoped>
 @import "../assets/CSS/login-register.css";
+
+/* el-form-item调整 */
+.verification .el-form-item {
+  margin-bottom: 0;
+}
+/* 校验错误 */
+.verification .el-form-item.is-error {
+  margin-bottom: 20px;
+}
+.verification /deep/ .el-form-item__error {
+  right: 0;
+}
 </style>

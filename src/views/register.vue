@@ -14,7 +14,7 @@
           <div class="form-ForgotPass" v-show="ishidden">
             <el-form ref="form" :model="form" label-width="80px">
               <div class="login-from-title">用户注册</div>
-              <el-input v-model="form.emailAddress" placeholder="邮箱"
+              <el-input v-model="form.emailAddres" placeholder="邮箱"
                 ><i slot="prefix" class="el-input__icon el-icon-message"></i
               ></el-input>
               <div class="verification">
@@ -126,7 +126,7 @@ export default {
       // 定时器
       timer: null,
       form: {
-        emailAddress: "",
+        emailAddres: "",
         userName: "", //用户昵称
         pass: "",
         verification: "", //验证码
@@ -147,6 +147,7 @@ export default {
     },
     getCode: function () {
       //获取验证码
+      
       if (!this.timer) {
         this.codeDisabled = true; //按钮设置为不可用
         let _this = this;
@@ -166,7 +167,7 @@ export default {
           }
         }, 1000);
         this.$axios.get("/get_email_code", {
-          params: { email: _this.form.emailAddress },
+          params: { email: _this.form.emailAddres },
         });
       }
     },
@@ -188,19 +189,23 @@ export default {
       document.querySelector(".login100-pic").style.transform =
         "perspective(300px) rotateX(0deg) rotateY(0deg)";
     },
+    //注册接口
     zhuce: function () {
-      let email_ = this.form.emailAddress;
+      let email_ = this.form.emailAddres;
       let code_ = this.form.verification;
       let name = this.form.userName;
       let paw = this.form.pass;
       let paw_ = this.form.checkPass;
       let _this = this;
+      if (email_ == "" || code_ == "" || paw == "" || name == "" || paw_ == "")
+        return;
       this.$confirm("即将注册xx商城，是否继续？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
+          //注册接口
           this.$axios
             .post("/register", {
               email: email_,
@@ -210,12 +215,18 @@ export default {
             })
             .then((res) => {
               if (res.data.msg === "注册成功！") {
+                const jwt = res.headers["authorization"];
+                const userinfo = res.data.data.userinfo;
+                _this.$store.commit("SET_TOKEN", jwt);
+                _this.$store.commit("SET_USERINFO", userinfo);
                 this.$message({
                   type: "success",
                   message: "注册成功！",
                 });
                 //登录成功后跳转到首页
-                setTimeout(()=>{this.$router.push({ path: "/" })},3000);
+                setTimeout(() => {
+                  this.$router.push({ path: "/" });
+                }, 3000);
               }
             });
         })
