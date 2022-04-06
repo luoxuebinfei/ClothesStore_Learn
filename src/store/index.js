@@ -20,9 +20,11 @@ export default new Vuex.Store({
     },
     REMOVE_INFO: (state) => {
       state.token = ''
-      state.userInfo = {}
-      localStorage.setItem("token", '')
-      sessionStorage.setItem("userInfo", JSON.stringify(''))
+      state.userInfo = ''
+      // localStorage.setItem("token", '')
+      // sessionStorage.setItem("userInfo", JSON.stringify(''))
+      localStorage.clear();
+      sessionStorage.clear();
     }
 
   },
@@ -30,6 +32,9 @@ export default new Vuex.Store({
     // get
     getUser: state => {
       return state.userInfo
+    },
+    getToken: () => {
+      return localStorage.getItem("token")
     }
 
   },

@@ -9,6 +9,7 @@ import ShopInfo from "../views/ShopInfo";
 import Mall from "../views/Mall";
 import Search from "../views/Search";
 import Order from "../views/Order";
+import OrderClient from "../views/OrderClient"
 
 
 Vue.use(VueRouter)
@@ -57,6 +58,11 @@ const routes = [{
     path: '/order',
     name: 'order',
     component:Order
+  },
+  {
+    path: '/order_client',
+    name: 'orderClient',
+    component:OrderClient
   },
 ]
 
