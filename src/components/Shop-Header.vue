@@ -18,7 +18,7 @@
           <a href="/home"
             ><el-button icon="iconfont icon-wode" title="个人中心"></el-button
           ></a>
-          <div class="info" v-if="username!=''">
+          <div class="info" v-if="username.length!=0 || username===undefined">
             <span :title="username">昵称：{{ username }}</span
             ><a href="javascript:;" @click="quit">退出登录</a>
           </div>
@@ -87,7 +87,10 @@ export default {
       this.$router.go(0);
     },
   },
-  mounted() {
+  created() {
+    if (localStorage.getItem("token")===null || localStorage.getItem("token").length===0){
+      this.$store.commit("REMOVE_INFO");
+    }
     this.username = this.$store.getters.getUser;
   },
 };

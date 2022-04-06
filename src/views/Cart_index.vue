@@ -15,6 +15,8 @@
           empty-text="购物车是空的哦~ 快去选购商品吧~"
           :row-class-name="tableRowClassName"
           @selection-change="handleSelectionChange"
+          @select="changeChecked"
+          @select-all="changeCheckedAll"
         >
           <el-table-column
             type="selection"
@@ -51,7 +53,12 @@
           </el-table-column>
           <!-- 规格列 -->
           <el-table-column prop="props" align="left">
-            <template slot-scope="scope"><div><p>{{scope.row.props.split(" ")[0]}}</p><p>{{scope.row.props.split(" ")[1]}}</p></div></template>
+            <template slot-scope="scope"
+              ><div>
+                <p>{{ scope.row.props.split(" ")[0] }}</p>
+                <p>{{ scope.row.props.split(" ")[1] }}</p>
+              </div></template
+            >
           </el-table-column>
           <el-table-column
             prop="price"
@@ -76,7 +83,7 @@
                 size="mini"
                 v-model="scope.row.quantity"
                 :min="1"
-                @change="(value) => quantityChange(value, scope)"
+                @change="(newValue,oldValue) => quantityChange(newValue, scope,oldValue)"
               ></el-input-number
             ></template>
           </el-table-column>
@@ -123,7 +130,7 @@
             元
           </div>
           <div class="btn-area">
-            <el-button type="primary">去结算</el-button>
+            <el-button type="primary" @click="orderclient">去结算</el-button>
           </div>
         </div>
       </div>
@@ -146,35 +153,21 @@ export default {
       checked: false, //底下全选按钮的选中情况
       shopNum: 0, //商品数量
       shopPriceSum: 0, //商品总价
-      tableData: [
-        {
-          shopname:
-            "罗蒙(ROMON)夹克男士外套2022春秋季潮流时尚简约纯色工装夹克衫青年商务休闲百搭上衣连帽男装2186黑色XL",
-          price: "190.00", //单价
-          quantity: 1, //数量
-          shopId: 1, //商品ID
-          props: "黑色 XL", //规格
-          imgurl:
-            "https://img12.360buyimg.com/n0/s80x80_jfs/t1/126155/14/20958/120747/62071461E84cefe0a/39c5a54a2b855b4c.jpg.dpg", //图片链接
-        },
-        {
-          shopname:
-            "雅鹿 男士棉衣 2021冬季男士青年时尚简约百搭纯色宽松保暖立领棉衣 19781012 黑色 175/XL",
-          price: "158.00", //单价
-          quantity: 1, //数量
-          shopId: 2, //商品ID
-          props:"黑色 175/XL",
-          imgurl:"https://img12.360buyimg.com/n0/s80x80_jfs/t1/115912/7/19734/103753/5f81a091E9e6aa2a0/2baec75362bd45a6.jpg.dpg",
-        },
-        
-      ],
+      tableData: [],
       multipleSelection: [],
     };
   },
   methods: {
     //单个商品数量改变时执行的函数
-    quantityChange: function () {
-      this.changeNumAndSum();
+    quantityChange: function (newValue,scope,oldValue) {
+      this.$axios.post("/update_cart_num",{
+        "skuId":scope.row.shopId,
+        "num":newValue.toString(),
+      }).then(()=>{
+        this.changeNumAndSum();
+      }).catch(()=>{
+        scope.row.quantity=oldValue;
+      })
     },
 
     // 当选中情况发生变化所执行的函数
@@ -189,11 +182,13 @@ export default {
       if (this.tableData.length == 0) {
         document.querySelector(".cart-floatbar").style.display = "none";
       }
+      // console.log(val)
     },
     quanxuan: function () {
       //底下的全选按钮
       this.$refs.multipleTable.toggleAllSelection();
     },
+    //改变数量总价
     changeNumAndSum() {
       let n = 0,
         m = 0;
@@ -226,6 +221,75 @@ export default {
       }
       return "";
     },
+    //进入提交订单页面
+    orderclient() {
+      if (this.multipleSelection.length === 0) {
+        return;
+      }
+      var route = this.$router.resolve({ name: "orderClient" });
+      sessionStorage.setItem(
+        "checkedData",
+        JSON.stringify(this.multipleSelection)
+      );
+      window.open(route.href, "_blank");
+    },
+    //通过api获取购物车数据
+    getCartIndex() {
+      const _this = this;
+      this.$axios.get("/cart_index").then((res) => {
+        var data = res.data.data;
+        if (data === null) {
+          _this.tableData = [];
+        } else {
+          _this.tableData = data;
+          _this.multipleSelection = data.filter((res)=>{return res.checked=="1"});
+          _this.$nextTick(()=>{
+            for (let i of _this.multipleSelection){
+              _this.$refs.multipleTable.toggleRowSelection(i, true);
+            }
+          })
+        }
+      });
+    },
+    //当切换某一行选中状态时执行的函数
+    changeChecked(selection,row){
+      var status="1";//默认为选中
+      if (selection.indexOf(row)!=-1){
+        status="1";
+      }else{
+        status="2";
+      }
+      this.$axios.post("/change_cart_checked",{
+        data:[row.shopId],
+        status:status,
+      })
+    },
+    //点击全选时执行的函数
+    changeCheckedAll(selection){
+      var x = [];
+      if (selection.length === 0){
+        for (let i of this.tableData){
+          x.push(i.shopId);
+        }
+        this.$axios.post("/change_cart_checked",{
+          data:x,
+          status:"2",
+        })
+      }else{
+        for (let i of selection){
+          x.push(i.shopId);
+        }
+        this.$axios.post("/change_cart_checked",{
+          data:x,
+          status:"1",
+        })
+      }
+    }
+  },
+  created() {
+    this.$nextTick(function () {
+      this.getCartIndex();
+    });
   },
 };
 //加法函数，用来得到精确的加法结果
@@ -317,11 +381,11 @@ main {
   -webkit-box-orient: vertical;
 }
 /* 商品列表中图片和文字并排 */
-.table .goods-item{
+.table .goods-item {
   float: left;
   margin: 12px auto;
 }
-.table .goods-item .p-img{
+.table .goods-item .p-img {
   float: left;
   margin-right: 1rem;
 }
