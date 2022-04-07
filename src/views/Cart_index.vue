@@ -83,7 +83,10 @@
                 size="mini"
                 v-model="scope.row.quantity"
                 :min="1"
-                @change="(newValue,oldValue) => quantityChange(newValue, scope,oldValue)"
+                @change="
+                  (newValue, oldValue) =>
+                    quantityChange(newValue, scope, oldValue)
+                "
               ></el-input-number
             ></template>
           </el-table-column>
@@ -159,15 +162,18 @@ export default {
   },
   methods: {
     //单个商品数量改变时执行的函数
-    quantityChange: function (newValue,scope,oldValue) {
-      this.$axios.post("/update_cart_num",{
-        "skuId":scope.row.shopId,
-        "num":newValue.toString(),
-      }).then(()=>{
-        this.changeNumAndSum();
-      }).catch(()=>{
-        scope.row.quantity=oldValue;
-      })
+    quantityChange: function (newValue, scope, oldValue) {
+      this.$axios
+        .post("/update_cart_num", {
+          skuId: scope.row.shopId,
+          num: newValue.toString(),
+        })
+        .then(() => {
+          this.changeNumAndSum();
+        })
+        .catch(() => {
+          scope.row.quantity = oldValue;
+        });
     },
 
     // 当选中情况发生变化所执行的函数
@@ -201,17 +207,49 @@ export default {
     },
     //删除选中商品
     removeCheck(row) {
-      if (row != undefined) {
-        //单行删除
-        this.tableData = diffrence(this.tableData, Array(row));
-      } else {
-        //多选删除
-        this.tableData = diffrence(this.tableData, this.multipleSelection);
-      }
-      if (this.tableData.length == 0) {
-        document.querySelector(".cart-floatbar").style.display = "none";
-      }
-      //向后端发送请求，将后端用户购物车中数据一并删除
+      this.$confirm("此操作将从购物车中删除商品，是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          //向后端发送请求，将后端用户购物车中数据一并删除
+          if (row != undefined) {
+            //单行删除
+            this.$axios
+              .post("/delete_cart_shop", {
+                data: [row.shopId],
+              })
+              .then(() => {
+                this.tableData = diffrence(this.tableData, Array(row));
+              });
+          } else {
+            //多选删除
+            var x = [];
+            for (let i of this.multipleSelection) {
+              x.push(i.shopId);
+            }
+            this.$axios
+              .post("/delete_cart_shop", {
+                data: x,
+              })
+              .then(() => {
+                this.tableData = diffrence(
+                  this.tableData,
+                  this.multipleSelection
+                );
+              });
+          }
+          if (this.tableData.length == 0) {
+            document.querySelector(".cart-floatbar").style.display = "none";
+          }
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
     tableRowClassName({ row }) {
       // 当前选中行id 与 表格的各行比较
@@ -242,49 +280,51 @@ export default {
           _this.tableData = [];
         } else {
           _this.tableData = data;
-          _this.multipleSelection = data.filter((res)=>{return res.checked=="1"});
-          _this.$nextTick(()=>{
-            for (let i of _this.multipleSelection){
+          _this.multipleSelection = data.filter((res) => {
+            return res.checked == "1";
+          });
+          _this.$nextTick(() => {
+            for (let i of _this.multipleSelection) {
               _this.$refs.multipleTable.toggleRowSelection(i, true);
             }
-          })
+          });
         }
       });
     },
     //当切换某一行选中状态时执行的函数
-    changeChecked(selection,row){
-      var status="1";//默认为选中
-      if (selection.indexOf(row)!=-1){
-        status="1";
-      }else{
-        status="2";
+    changeChecked(selection, row) {
+      var status = "1"; //默认为选中
+      if (selection.indexOf(row) != -1) {
+        status = "1";
+      } else {
+        status = "2";
       }
-      this.$axios.post("/change_cart_checked",{
-        data:[row.shopId],
-        status:status,
-      })
+      this.$axios.post("/change_cart_checked", {
+        data: [row.shopId],
+        status: status,
+      });
     },
     //点击全选时执行的函数
-    changeCheckedAll(selection){
+    changeCheckedAll(selection) {
       var x = [];
-      if (selection.length === 0){
-        for (let i of this.tableData){
+      if (selection.length === 0) {
+        for (let i of this.tableData) {
           x.push(i.shopId);
         }
-        this.$axios.post("/change_cart_checked",{
-          data:x,
-          status:"2",
-        })
-      }else{
-        for (let i of selection){
+        this.$axios.post("/change_cart_checked", {
+          data: x,
+          status: "2",
+        });
+      } else {
+        for (let i of selection) {
           x.push(i.shopId);
         }
-        this.$axios.post("/change_cart_checked",{
-          data:x,
-          status:"1",
-        })
+        this.$axios.post("/change_cart_checked", {
+          data: x,
+          status: "1",
+        });
       }
-    }
+    },
   },
   created() {
     this.$nextTick(function () {
