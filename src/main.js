@@ -15,8 +15,10 @@ import LazyLoad from "@/assets/JS/LazyLoad";
 import store from './store'
 import axios from 'axios'
 import "./axios.js"
+import qs from 'qs'
 
 Vue.prototype.$axios = axios;
+Vue.prototype.$qs = qs;
 
 Vue.use(ElementUI);
 Vue.use(LazyLoad,{

@@ -36,7 +36,7 @@
                     target="_blank"
                     class="clearfix"
                     :title="scope.row.shopname"
-                    ><img :src="scope.row.imgurl" :alt="scope.row.shopname"
+                    ><img :src="scope.row.imgurl" :alt="scope.row.shopname" width="80" height="80"
                   /></router-link>
                 </div>
                 <div class="p-meg">

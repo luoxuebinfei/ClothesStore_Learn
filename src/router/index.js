@@ -9,7 +9,8 @@ import ShopInfo from "../views/ShopInfo";
 import Mall from "../views/Mall";
 import Search from "../views/Search";
 import Order from "../views/Order";
-import OrderClient from "../views/OrderClient"
+import OrderClient from "../views/OrderClient";
+import NotFound from "../views/404";
 
 
 Vue.use(VueRouter)
@@ -63,6 +64,11 @@ const routes = [{
     path: '/order_client',
     name: 'orderClient',
     component:OrderClient
+  },
+  {
+    path: '*',
+    name: 'notfound',
+    component:NotFound
   },
 ]
 
