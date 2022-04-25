@@ -51,7 +51,9 @@
                   <div class="sl-vlist">
                     <ul class="valueList">
                       <li v-for="i of brands" :key="i[1]" :data-initial="i[0]">
-                        {{ i[1] }}
+                        <a href="javascript:;" @click="clickbrand(i[1])">{{
+                          i[1]
+                        }}</a>
                       </li>
                     </ul>
                   </div>
@@ -69,7 +71,9 @@
                 <div class="sl-value">
                   <div class="sl-vlist">
                     <ul class="valueList">
-                      <li v-for="i of size" :key="i">{{ i }}</li>
+                      <li v-for="i of size" :key="i">
+                        <a href="javascript:;" @click="clicksize(i)">{{ i }}</a>
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -131,7 +135,15 @@
             </div>
           </div>
           <div class="page clearfix">
-            <el-pagination background layout="prev, pager, next,jumper" :total="1000">
+            <el-pagination
+              background
+              layout="prev, pager, next,jumper"
+              v-if="total>0"
+              :page-size="20"
+              :current-page="curr_page"
+              @current-change="clickpage"
+              :total="total"
+            >
             </el-pagination>
           </div>
         </div>
@@ -145,10 +157,11 @@
 <script>
 import Header from "../components/Shop-Header.vue";
 import Footer from "../components/Footer.vue";
+import axios from "axios";
 export default {
   components: {
     Header,
-    Footer
+    Footer,
   },
   data() {
     return {
@@ -595,6 +608,9 @@ export default {
           sku: "10039680662734",
         },
       ],
+      url: window.location.href,
+      curr_page:1,
+      total:200,
     };
   },
   methods: {
@@ -679,9 +695,56 @@ export default {
           list.scrollHeight <= list.clientHeight ? "hidden" : "visible";
       }
     },
+    getSearchApi() {
+      const url = location.search.substring(1);
+      let r = /keyword=(.*)&?/gi;
+      let keyword = r.exec(url)[1];
+      const _this = this;
+      axios.get(`/search?keyword=${keyword}`).then((res) => {
+        let data = res.data.data;
+        _this.brands = data.brands;
+        _this.size = data.size;
+        _this.shopList = data.goods_list;
+      });
+    },
+    //点击品牌
+    clickbrand(value) {
+      var url = location.search.substring(1);
+      let r = /.*?&brand=(.*)&?/gi;
+      // let old = r.exec(url)[1]
+      if (r.test(url)) {
+        let r = /.*?&brand=(.*)&?/gi;
+        window.location.href = "/search?" + url.replace(r.exec(url)[1], value);
+      } else {
+        window.location.href = "/search?" + url + "&brand=" + value;
+      }
+    },
+    //点击尺码
+    clicksize(value) {
+      var url = location.search.substring(1);
+      let r = /.*?&size=(.*)&?/gi;
+      // let old = r.exec(url)[1]
+      if (r.test(url)) {
+        let r = /.*?&size=(.*)&?/gi;
+        window.location.href = "/search?" + url.replace(r.exec(url)[1], value);
+      } else {
+        window.location.href = "/search?" + url + "&size=" + value;
+      }
+    },
+    currentPage(){
+      console.log(1111)
+    },
+    //点击页码切换
+    clickpage(){
+      console.log(this.curr_page)
+    }
   },
   mounted() {
     this.showMoreBtn();
+    const _this = this;
+    this.$nextTick(() => {
+      _this.getSearchApi();
+    });
   },
 };
 </script>
@@ -878,10 +941,10 @@ ul.valueList > li {
   color: #999;
 }
 /* 分页 */
-.page{
+.page {
   margin-bottom: 50px;
 }
-.page .el-pagination{
+.page .el-pagination {
   float: right;
 }
 </style>

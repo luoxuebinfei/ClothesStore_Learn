@@ -2,8 +2,8 @@
   <div class="header clearfix">
     <div class="search clearfix">
       <!-- 搜索相关 -->
-      <el-form ref="form" :model="form">
-        <el-input v-model="form.searchText" placeholder="搜索"
+      <el-form ref="form" :model="form"  @submit.native.prevent>
+        <el-input v-model="form.searchText" placeholder="搜索" @keyup.enter.native="searchPost"
           ><el-button
             icon="el-icon-search"
             slot="suffix"
@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: "Shop-Header",
   data() {
@@ -56,6 +57,8 @@ export default {
   methods: {
     searchPost: function () {
       console.log(`提交了 ${this.form.searchText}`);
+      let keyword = this.form.searchText;
+      this.$router.push({name:'search',query:{keyword:keyword}});
     },
     quit() {
       this.$confirm("确定退出账号吗？", "提示", {

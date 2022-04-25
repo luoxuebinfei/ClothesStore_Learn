@@ -73,7 +73,7 @@
           >
           </el-table-column>
           <el-table-column
-            prop="quantity"
+            prop="buyNum"
             label="数量"
             align="center"
             width="120"
@@ -81,11 +81,11 @@
             <template slot-scope="scope"
               ><el-input-number
                 size="mini"
-                v-model="scope.row.quantity"
+                v-model="scope.row.buyNum"
                 :min="1"
                 @change="
                   (newValue, oldValue) =>
-                    quantityChange(newValue, scope, oldValue)
+                    buyNumChange(newValue, scope, oldValue)
                 "
               ></el-input-number
             ></template>
@@ -98,7 +98,7 @@
             :formatter="
               (value) => {
                 return `￥${(
-                  (parseFloat(value.price) * value.quantity * 100) /
+                  (parseFloat(value.price) * value.buyNum * 100) /
                   100
                 ).toFixed(2)}`;
               }
@@ -162,7 +162,7 @@ export default {
   },
   methods: {
     //单个商品数量改变时执行的函数
-    quantityChange: function (newValue, scope, oldValue) {
+    buyNumChange: function (newValue, scope, oldValue) {
       this.$axios
         .post("/update_cart_num", {
           skuId: scope.row.shopId,
@@ -172,7 +172,7 @@ export default {
           this.changeNumAndSum();
         })
         .catch(() => {
-          scope.row.quantity = oldValue;
+          scope.row.buyNum = oldValue;
         });
     },
 
@@ -199,8 +199,8 @@ export default {
       let n = 0,
         m = 0;
       this.multipleSelection.forEach((element) => {
-        n = n.add((parseFloat(element.price) * 100 * element.quantity) / 100); //商品总价
-        m += parseInt(element.quantity);
+        n = n.add((parseFloat(element.price) * 100 * element.buyNum) / 100); //商品总价
+        m += parseInt(element.buyNum);
       });
       this.shopPriceSum = n.toFixed(2);
       this.shopNum = m;
@@ -264,12 +264,22 @@ export default {
       if (this.multipleSelection.length === 0) {
         return;
       }
-      var route = this.$router.resolve({ name: "orderClient" });
-      sessionStorage.setItem(
-        "checkedData",
-        JSON.stringify(this.multipleSelection)
-      );
-      window.open(route.href, "_blank");
+      var m = this.multipleSelection;
+      m = m.map((e)=>{
+        var a = {};
+        a.skuid = e.shopId;
+        a.buyNum = e.buyNum.toString();
+        return a
+      })
+      const _this = this;
+      this.$axios.post("/get_order_client",{
+        data:m,
+      }).then((res)=>{
+        let data = res.data.data;
+        window.sessionStorage.setItem("checkedData", JSON.stringify(data));
+        var route = _this.$router.resolve({ name: "orderClient" });
+        window.open(route.href, "_blank");
+      })
     },
     //通过api获取购物车数据
     getCartIndex() {

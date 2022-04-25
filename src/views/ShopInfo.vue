@@ -17,7 +17,7 @@
             <div class="summary">
               <div class="summary-price clearfix">
                 <div class="dt">价&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;格</div>
-                <div class="dd">￥158.00</div>
+                <div class="dd">￥{{ price }}</div>
               </div>
               <div class="summary-stock clearfix">
                 <div class="dt">配 送 至</div>
@@ -27,31 +27,34 @@
                     filterable
                     allow-create
                     default-first-option
+                    @change="changeAddress"
                     placeholder="请选择配送地址"
                   >
                     <el-option
                       v-for="item of areaData"
-                      :key="item.areaId"
-                      :label="item.areaText"
-                      :value="item.areaId"
+                      :key="item.id"
+                      :label="item.name + ' ' + item.address + ' ' + item.phone"
+                      :value="item.id"
                     >
-                      <span style="float: left">{{ item.areaText }}</span>
-                      <span
+                      <span style="float: left">{{
+                        item.name + " " + item.address + " " + item.phone
+                      }}</span>
+                      <!-- <span
                         style="
                           margin-left: 15px;
                           color: #8492a6;
                           font-size: 13px;
                         "
                         >({{ item.areaId }})</span
-                      >
+                      > -->
                     </el-option>
                   </el-select>
-                  <div class="stock" v-if="attrs.stock">有货</div>
+                  <div class="stock" v-if="stock">有货</div>
                   <div class="stock" v-else>无货</div>
-                  <router-link
-                    to=""
+                  <a
+                    href="/home#address"
                     style="color: #666; margin-left: 1rem; font-size: 16px"
-                    >新增地址</router-link
+                    >新增地址</a
                   >
                 </div>
               </div>
@@ -65,7 +68,7 @@
                 <div class="dt">选择颜色</div>
                 <div class="dd">
                   <div
-                    v-for="i of attrs.color"
+                    v-for="i in attrs.color"
                     :key="i.skuid"
                     class="item"
                     v-bind:class="{ disabled: !i.stock }"
@@ -74,6 +77,7 @@
                   >
                     <router-link
                       :to="{ name: 'shopInfo', params: { id: i.skuid } }"
+                      v-if="i.skuid != ''"
                       ><img
                         :src="i.imgurl"
                         :alt="i.text"
@@ -88,7 +92,7 @@
                 <div class="dt">选择尺码</div>
                 <div class="dd">
                   <div
-                    v-for="i of attrs.size"
+                    v-for="i in attrs.size"
                     :key="i.skuid"
                     class="item"
                     v-bind:class="{ disabled: !i.stock }"
@@ -114,10 +118,10 @@
                 ></el-input-number>
               </div>
               <div class="btn-special1">
-                <el-button>加入购物车</el-button>
+                <el-button @click="addCart">加入购物车</el-button>
               </div>
               <div class="btn-buy">
-                <el-button>立即购买</el-button>
+                <el-button @click="getOrderClient">立即购买</el-button>
               </div>
             </div>
           </div>
@@ -125,7 +129,7 @@
       </div>
       <div class="w clearfix">
         <!-- 店铺、详情、评论 -->
-        <div class="aside">
+        <!-- <div class="aside">
           <div class="popbox-inner">
             <div class="mt">
               <h3>
@@ -158,23 +162,16 @@
             <div class="tab-main">
               <ul @click="chooseCurrent">
                 <li class="current" clstag="shangpinjieshao">商品介绍</li>
-                <li clstag="shouhoubaozhang">售后保障</li>
-                <li clstag="pingjia">商品评价</li>
+                <!-- <li clstag="shouhoubaozhang">售后保障</li> -->
+                <!-- <li clstag="pingjia">商品评价</li> -->
               </ul>
             </div>
             <div class="tab-con">
               <div v-show="chooseNum == 1">
                 <div class="p-parameter">
                   <ul class="p-parameter-list clearfix">
-                    <li :title="parameter.brand.text">
-                      品牌：<router-link
-                        :to="{
-                          name: 'mall',
-                          params: { id: parameter.brand.shopId },
-                        }"
-                        style="color: blue"
-                        >{{ parameter.brand.text }}</router-link
-                      >
+                    <li :title="parameter.brand">
+                      品牌：{{ parameter.brand }}
                     </li>
                   </ul>
                   <ul class="parameter2 clearfix">
@@ -200,7 +197,9 @@
               </div>
             </div>
             <div class="J-detail-content" v-show="chooseNum == 1">
-              <div class="ssd-module-wrap"></div>
+              <div class="ssd-module-wrap">
+                <img v-lazy="i" alt="" v-for="i in detailsImages" :key="i" />
+              </div>
             </div>
           </div>
         </div>
@@ -214,6 +213,8 @@
 <script>
 import Header from "../components/Shop-Header.vue";
 import Footer from "../components/Footer.vue";
+import axios from "axios";
+
 export default {
   components: {
     Header,
@@ -223,93 +224,26 @@ export default {
     return {
       specImages: [
         //350x350大小的图片
-        "https://img14.360buyimg.com/n1/jfs/t1/115912/7/19734/103753/5f81a091E9e6aa2a0/2baec75362bd45a6.jpg",
-        "https://img14.360buyimg.com/n1/jfs/t1/126305/8/14564/91164/5f81a090Eab367090/db16b395687aca42.jpg",
-        "https://img14.360buyimg.com/n1/jfs/t1/120562/13/14617/85552/5f81a091Ef44628b3/b69d1a258b2d2d78.jpg",
-        "https://img14.360buyimg.com/n1/jfs/t1/115864/23/19753/86031/5f81a091Eb46675d7/7595b5353e4f8abe.jpg",
-        "https://img14.360buyimg.com/n1/jfs/t1/149290/30/10358/111037/5f81a091E101606aa/a5bf2c5ab0833d9f.jpg",
       ],
       smallSpecImages: [
         //50x50大小的图片
-        "https://img14.360buyimg.com/n5/jfs/t1/115912/7/19734/103753/5f81a091E9e6aa2a0/2baec75362bd45a6.jpg",
-        "https://img14.360buyimg.com/n5/jfs/t1/126305/8/14564/91164/5f81a090Eab367090/db16b395687aca42.jpg",
-        "https://img14.360buyimg.com/n5/jfs/t1/120562/13/14617/85552/5f81a091Ef44628b3/b69d1a258b2d2d78.jpg",
-        "https://img14.360buyimg.com/n5/jfs/t1/115864/23/19753/86031/5f81a091Eb46675d7/7595b5353e4f8abe.jpg",
-        "https://img14.360buyimg.com/n5/jfs/t1/149290/30/10358/111037/5f81a091E101606aa/a5bf2c5ab0833d9f.jpg",
       ],
-      skuName:
-        "雅鹿 男士棉衣 2021冬季男士青年时尚简约百搭纯色宽松保暖立领棉衣 19781012 黑色 175/XL",
-      areaId: "23-3690-3696-53704",
-      areaData: [
-        {
-          areaId: "23-3690-3696-53704",
-          areaText: "海南三亚市天涯区河西区街道",
-        },
-      ],
+      skuName: "",
+      price: "",
+      areaId: "",
+      areaData: [],
       weight: "0.5kg",
+      stock: false,
       attrs: {
-        color: [
-          {
-            skuid: "1",
-            text: "黑色",
-            stock: true,
-            isChecked: true,
-            imgurl:
-              "https://img13.360buyimg.com/n9/s40x40_jfs/t1/115912/7/19734/103753/5f81a091E9e6aa2a0/2baec75362bd45a6.jpg",
-          },
-          {
-            skuid: "2",
-            text: "墨绿",
-            stock: false,
-            isChecked: false,
-            imgurl:
-              "https://img10.360buyimg.com/n9/s40x40_jfs/t1/132882/23/11610/92928/5f81a0d7Ecb468728/34f5f0e17aefc520.jpg",
-          },
-        ],
-        size: [
-          { skuid: "3", text: "170/L", stock: true, isChecked: false },
-          { skuid: "4", text: "175/XL", stock: true, isChecked: false },
-          { skuid: "1", text: "180/2XL", stock: true, isChecked: true },
-          { skuid: "5", text: "190/4XL", stock: true, isChecked: false },
-        ],
-        stock: true,
+        color: [],
+        size: [],
+        // stock: true,
       },
       buyNum: 1, //购买数量
       shopName: "雅鹿服装自营旗舰店", //店铺名字
       shopId: 1, //店铺id
-      parameter: {
-        brand: { text: "雅鹿", shopId: "1" },
-        parameter2: {
-          商品名称: "雅鹿男士棉衣",
-          商品编号: "1",
-          商品毛重: "500.00g",
-          商品产地: "福建泉州",
-          货号: "1",
-          材质: "涤纶(聚酯纤维)",
-          衣门襟: "拉链",
-          版型: "宽松型",
-          流行元素: "图腾",
-          领型: "立领",
-          "衣长:": "常规款",
-          "厚度 ": "厚款",
-          适用人群: "青年",
-          填充物: "涤纶(聚酯纤维)",
-          上市时间: "2021年冬季",
-          "风格 ": "休闲风",
-          基础风格: "休闲百搭",
-          "图案 ": "纯色",
-          适用场景: "日常",
-        },
-      },
-      detailsImages: [
-        "https://img30.360buyimg.com/sku/jfs/t1/137204/18/7887/53026/5f43834aE193ddabc/1b80e4055963a437.jpg",
-        "https://img30.360buyimg.com/sku/jfs/t1/129853/38/11816/311717/5f81a39cEf2574cb5/abc3d9a0dae237e9.jpg",
-        "https://img30.360buyimg.com/sku/jfs/t1/140517/5/10454/172434/5f81a399Ee4f34fc5/7e06a9246a041564.jpg",
-        "https://img30.360buyimg.com/sku/jfs/t1/137695/10/10390/233575/5f81a39bE22f81c8d/3aa625e345f0f812.jpg",
-        "https://img30.360buyimg.com/sku/jfs/t1/130614/29/12015/413898/5f81a39dE922d1e97/b7c84a85ab39d599.jpg",
-        "https://img30.360buyimg.com/sku/jfs/t1/217321/36/294/129368/6167fe5cE20774546/a93e795b8f54db19.jpg",
-        "https://img30.360buyimg.com/sku/jfs/t1/121696/15/10678/338910/5f4228dcEc198e960/81a32cd4fef6df29.jpg",
-      ],
+      parameter: {},
+      detailsImages: [],
       chooseNum: 1, //切换参数
     };
   },
@@ -321,7 +255,9 @@ export default {
       for (let i in this.specImages) {
         //添加一个img
         let img = document.createElement("img");
-        img.src = this.smallSpecImages[i];
+        img.width = "50";
+        img.height = "50";
+        img.src = this.specImages[i];
         //加到button里面
         a[i].appendChild(img);
       }
@@ -329,7 +265,7 @@ export default {
     //根据本页面skuid选中相应的选项
     setChooseAttrClassName: function () {
       var skuid = window.location.pathname.split("/")[2];
-      var items = document.querySelectorAll(".item");
+      var items = document.querySelectorAll(".dd .item");
       items.forEach((element) => {
         if (element.getAttribute("data-sku") == skuid) {
           element.className = "item selected";
@@ -384,12 +320,107 @@ export default {
         d.appendChild(bg);
       }
     },
+    //添加商品到购物车
+    addCart() {
+      var skuid = window.location.pathname.substring(10);
+      this.$axios
+        .post("/add_cart", {
+          skuId: skuid,
+          buyNum: this.buyNum.toString(),
+        })
+        .then((res) => {
+          this.$message({
+            message: res.data.msg,
+            type: "success",
+          });
+        });
+    },
+    //进入订单提交页面
+    getOrderClient() {
+      var skuid = window.location.pathname.split("/")[2];
+      const _this = this;
+      var m = new Array();
+      m.push({
+        skuid: skuid,
+        buyNum: _this.buyNum.toString(),
+      });
+      this.$axios
+        .post("/get_order_client", {
+          data: m,
+        })
+        .then((res) => {
+          let data = res.data.data;
+          window.sessionStorage.setItem("checkedData", JSON.stringify(data));
+          _this.$router.push("/order_client");
+        });
+    },
+    //后台请求商品信息
+    getshopInfo() {
+      var skuid = window.location.pathname.split("/")[2];
+      const _this = this;
+      axios.get(`/shopInfo/${skuid}`).then((res) => {
+        var data = res.data.data;
+        _this.specImages = JSON.parse(data["specImages"]); //轮播图
+        _this.detailsImages = JSON.parse(data.detailsImages); //详情图
+        _this.attrs = data.attrs; //规格切换
+        _this.skuName = data.skuName; //标题
+        _this.price = data.price; //价格
+        _this.parameter.parameter2 = JSON.parse(data.parameter2); //详细参数
+        _this.stock = data.stock; //有货无货
+        _this.parameter.brand = data.brand_name; //品牌名
+        _this.weight = data.weight; //重量
+        _this.$nextTick(() => {
+          _this.indicatorToimage();
+        });
+      });
+      if (
+        window.localStorage.getItem("token") == "" ||
+        window.localStorage.getItem("token") == undefined
+      ) {
+        this.areaData = [];
+        this.areaId = "";
+      } else {
+        this.$axios.get("/get_address").then((res) => {
+          let data = res.data.data;
+          data = data.sort((a, b) => {
+            return parseInt(b.is_default) - parseInt(a.is_default);
+          });
+          _this.areaId = data[0].id;
+          _this.areaData = data;
+        });
+      }
+    },
+    //切换默认收货地址
+    changeAddress(value) {
+      const _this = this;
+      this.$axios
+        .post("/change_addressDefault", {
+          id: value,
+        })
+        .then((res) => {
+          var data = res.data.data;
+          _this.areaData = data.sort((a, b) => {
+            return parseInt(b.is_default) - parseInt(a.is_default);
+          });
+          console.log(_this.areaData);
+        });
+    },
   },
   mounted() {
     //在完全加载后再执行函数
-    this.$nextTick(() => this.indicatorToimage());
-    this.$nextTick(() => this.setChooseAttrClassName());
-    this.$nextTick(() => this.loadDetailsImages()); //加载详情图
+    this.$nextTick(() => {
+      this.getshopInfo();
+    });
+
+    // this.$nextTick(() => this.indicatorToimage());
+    // this.$nextTick(() => this.setChooseAttrClassName());
+    // this.$nextTick(() => this.loadDetailsImages()); //加载详情图
+  },
+  updated() {
+    this.$once("hook:updated", function () {
+      // this.indicatorToimage();
+      this.setChooseAttrClassName();
+    });
   },
 };
 </script>
