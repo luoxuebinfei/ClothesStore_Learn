@@ -10,7 +10,7 @@ axios.defaults.baseURL = "http://localhost:8100"
 
 //前置拦截
 axios.interceptors.request.use(config => {
-    let token = store.getters.getToken;
+    let token = localStorage.getItem("token");
     if (token===null || token.length!=0){
         config.headers.common['Authorization']=token;
     }

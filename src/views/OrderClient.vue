@@ -40,7 +40,7 @@
                 </div>
               </div>
               <div class="right">
-                <a href="">新增收货地址</a>
+                <a href="/home#address" target="_blank">新增收货地址</a>
               </div>
             </div>
             <el-divider></el-divider>
@@ -65,7 +65,7 @@
                   </div>
                   <div class="props">{{ i.props }}</div>
                   <div class="price">￥{{ i.price }}</div>
-                  <div class="buynum">x{{ i.quantity }}</div>
+                  <div class="buynum">x{{ i.buyNum }}</div>
                 </router-link>
               </div>
             </div>
@@ -144,7 +144,7 @@ export default {
       var sum = 0;
       for (let i of this.checkedData) {
         let price = parseFloat(i.price);
-        let num = parseInt(i.quantity);
+        let num = parseInt(i.buyNum);
         sum = (price * 100 * num) / 100 + sum;
       }
       this.priceSum = sum.toFixed(2);
@@ -157,7 +157,8 @@ export default {
           area: this.address.find((res) => res.id == _this.addressId),
         })
         .then((res) => {
-          console.log(res.data);
+          var data = res.data.data;
+          window.open(data,'_self');
         });
     },
   },

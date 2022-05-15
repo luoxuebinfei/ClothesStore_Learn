@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "18170194",
+      "name": "信封,信息,消息",
+      "font_class": "envelope-full",
+      "unicode": "e982",
+      "unicode_decimal": 59778
+    },
+    {
       "icon_id": "11542832",
       "name": "待付款",
       "font_class": "daifukuan",
@@ -29,7 +36,7 @@
     {
       "icon_id": "17967608",
       "name": "订单",
-      "font_class": "dingdan1",
+      "font_class": "dingdan",
       "unicode": "ee91",
       "unicode_decimal": 61073
     },
@@ -43,7 +50,7 @@
     {
       "icon_id": "17967649",
       "name": "购物车",
-      "font_class": "gouwuche1",
+      "font_class": "gouwuche",
       "unicode": "eeba",
       "unicode_decimal": 61114
     },

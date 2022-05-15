@@ -12,7 +12,7 @@
         <div class="form">
           <div class="form-login" v-show="ishidden === 1">
             <el-form ref="form" :model="form" label-width="80px">
-              <div class="login-from-title">用户登录</div>
+              <div class="login-from-title">{{ title }}</div>
               <el-input v-model="form.emailAddress" placeholder="邮箱"
                 ><i slot="prefix" class="el-input__icon el-icon-message"></i
               ></el-input>
@@ -95,8 +95,13 @@
               width: 80%;
             "
           ></div>
-          <div class="newpage">
+          <div class="newpage" v-if="title == '用户登录'">
             <router-link to="register">注册新用户</router-link> /
+            <a @click.prevent="setPassword" style="cursor: pointer">{{
+              forgot_text
+            }}</a>
+          </div>
+          <div class="newpage" v-else>
             <a @click.prevent="setPassword" style="cursor: pointer">{{
               forgot_text
             }}</a>
@@ -150,6 +155,8 @@ export default {
         password: [{ validator: validatePass, trigger: "blur" }],
         checkPass: [{ validator: validatePass2, trigger: "blur" }],
       },
+      title: "用户登录", //标题
+      loginUrl: "/login", //登录url
     };
   },
   methods: {
@@ -224,7 +231,7 @@ export default {
       })
         .then(() => {
           this.$axios
-            .post("/login", {
+            .post(this.loginUrl, {
               email: email,
               paw: paw,
             })
@@ -234,19 +241,27 @@ export default {
                 const userinfo = res.data.data.userinfo;
                 _this.$store.commit("SET_TOKEN", jwt);
                 _this.$store.commit("SET_USERINFO", userinfo);
+                sessionStorage.setItem("group", res.data.data.group);
                 this.$message({
                   type: "success",
                   message: "登录成功！",
                 });
-                setTimeout(() => {
-                  //跳转到登录前的页面
-                  const curr = localStorage.getItem("preRoute");
-                  if (curr == null) {
-                    this.$router.push({ path: "/" });
-                  } else {
-                    this.$router.push({ path: curr });
-                  }
-                }, 3000);
+                if (_this.title == "用户登录") {
+                  setTimeout(() => {
+                    //跳转到登录前的页面
+                    const curr = localStorage.getItem("preRoute");
+                    if (curr == null) {
+                      this.$router.push({ path: "/" });
+                    } else {
+                      this.$router.push({ path: curr });
+                    }
+                  }, 1000);
+                } else {
+                  setTimeout(() => {
+                    //跳转到登录前的页面
+                    this.$router.push({ path: "/admin/shop" });
+                  });
+                }
               }
             });
         })
@@ -285,7 +300,9 @@ export default {
                   type: "success",
                   message: "密码重置成功！",
                 });
-                setTimeout(()=>{_this.$router.go(0);},3000);
+                setTimeout(() => {
+                  _this.$router.go(0);
+                }, 3000);
               }
             });
         })
@@ -304,6 +321,15 @@ export default {
       .forEach((e) => {
         e.style.marginLeft = "";
       });
+    this.$nextTick(() => {
+      var url = window.location.href;
+      var arr = url.split("//");
+      url = arr[1].substring(arr[1].indexOf("/"));
+      if (url != "/login") {
+        this.loginUrl = "/admin/login";
+        this.title = "管理员登录";
+      }
+    });
   },
 };
 </script>

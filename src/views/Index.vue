@@ -4,9 +4,7 @@
     <header>
       <Header></Header>
     </header>
-    <aside>
-      
-    </aside>
+    <aside></aside>
     <main>
       <div class="main">
         <div class="lc-floor-1 clearfix">
@@ -46,10 +44,10 @@
           </div>
           <div class="carousel">
             <el-carousel height="499px">
-              <el-carousel-item v-for="item of imgeItems" :key="item">
+              <el-carousel-item v-for="(item, index) of imageItems" :key="index">
                 <h3 class="small">
-                  <router-link to=""
-                    ><img :src="item" alt="轮播图" style="width: 100%"
+                  <router-link :to="item.url"
+                    ><img :src="item.imgurl" alt="轮播图" style="width: 100%"
                   /></router-link>
                 </h3>
               </el-carousel-item>
@@ -65,8 +63,12 @@
             />
           </div>
           <div class="lc-ad-base">
-            <div class="lc-ad-base-item" v-for="item of adImages" :key="item">
-              <router-link to=""><img :src="item" alt="" /></router-link>
+            <div
+              class="lc-ad-base-item"
+              v-for="(item, index) of adImages"
+              :key="index"
+            >
+              <router-link :to="item.url"><img :src="item.imgurl" alt="" /></router-link>
             </div>
           </div>
           <div>
@@ -77,8 +79,8 @@
             <div class="lc-floor-recommend">
               <div
                 class="lc-floor-recommend-item"
-                v-for="item of good_items"
-                :key="item"
+                v-for="(item, index) of good_items"
+                :key="index"
               >
                 <a :href="item.shoplink" target="_blank"
                   ><img :src="item.img" alt="" />
@@ -93,13 +95,12 @@
     <footer>
       <Floor></Floor>
     </footer>
-    
   </div>
 </template>
 
 <script>
 import Floor from "../components/Footer.vue";
-import Header from "../components/Shop-Header.vue"
+import Header from "../components/Shop-Header.vue";
 export default {
   name: "Index",
   components: {
@@ -108,51 +109,14 @@ export default {
   },
   data() {
     return {
-      imgeItems: [
-        "https://img20.360buyimg.com/babel/s1900x980_jfs/t1/106604/21/24332/250258/6221715aE42ae1142/ec142def12c85578.jpg!cc_1900x980.webp",
-        "https://img14.360buyimg.com/babel/s1900x980_jfs/t1/167076/25/27195/185846/6216f0c5Edc496740/08e2ace7263ff621.jpg!cc_1900x980.webp",
-        "https://img14.360buyimg.com/babel/s1900x980_jfs/t1/221251/35/11667/511978/621de34fEc0aa0106/b105c210017c67bf.jpg!cc_1900x980.webp",
-        "https://img20.360buyimg.com/babel/s1900x980_jfs/t1/213019/38/13791/185749/621dc318E429de4fb/70bdbdcffadae6f9.jpg!cc_1900x980.webp",
+      imageItems: [
+        
       ],
       adImages: [
-        "https://img30.360buyimg.com/babel/jfs/t1/163230/25/12777/115876/6051a6b0E0ca33316/a973429be410acc4.png.webp",
-        "https://img10.360buyimg.com/babel/jfs/t1/163369/30/12848/63228/605018f2Eabae21b5/c564eb8a92338dc3.jpg.webp",
-        "https://img11.360buyimg.com/babel/jfs/t1/199645/4/19939/105135/61b314ceEaf0ccdf5/71886e15c90a17b3.png.webp",
-        "https://img12.360buyimg.com/babel/jfs/t1/205435/2/17777/36870/61aec443E02dde074/5fc1010aa64b6d57.jpg.webp",
-        "https://img14.360buyimg.com/babel/jfs/t1/169386/23/25220/27488/619efba8E14f5e76f/512bcc6b388b6990.jpg.webp",
-        "https://img10.360buyimg.com/babel/jfs/t1/143484/38/21596/67218/61a7145dEc4a5dd3a/74866aca9c0c5bd9.jpg.webp",
+        
       ],
       good_items: [
-        // 为你推荐模块数据类型
-        {
-          img: "https://img12.360buyimg.com/babel/s320x320_jfs/t1/215990/26/13804/141295/622237f4E4dd87219/709a28ef6b74fc90.jpg!cc_320x320.webp",
-          title:
-            "Dickies棉服 男女同款左袖字母印花抓绒充棉棒球夹克春夏新品厚外套男DK008131 黑色 00L",
-          shoplink: "https://item.jd.com/10020484775938.html",
-        },
-        {
-          img: "https://img10.360buyimg.com/babel/s320x320_jfs/t1/219955/32/13860/163580/62229a34E389662ee/e3c0ae03429a4ef8.jpg!cc_320x320.webp",
-          title:
-            "A21秋冬季2021新款男装宽松圆领长袖卫衣秋季新潮街头纯色百搭多颜色套头男舒适休闲衣服情侣装上衣 黑色 175/88A/L",
-          shoplink: "https://item.jd.com/10031955277654.html",
-        },
-        {
-          img: "https://img13.360buyimg.com/babel/s320x320_jfs/t1/128296/22/24769/137582/62225985Ea048aacc/37c08152be9c16b5.jpg!cc_320x320.webp",
-          title: "范思蓝恩 春秋新款纯色衬衫简约百搭收腰两穿长袖棉衬衣 白色 S",
-          shoplink: "https://item.jd.com/10026434691002.html",
-        },
-        {
-          img: "https://img14.360buyimg.com/babel/s320x320_jfs/t1/220268/13/13768/293180/622305c2E53e92815/46a7306a053e6566.jpg!cc_320x320.webp",
-          title:
-            "【2021秋季新款】betu百图女装经典牛仔外套女休闲复古港风百搭工装短外套2101T26 牛仔蓝 M",
-          shoplink: "https://item.jd.com/10025740195951.html",
-        },
-        {
-          img: "https://img11.360buyimg.com/babel/s320x320_jfs/t1/217561/32/13754/219052/622258f9E7b913589/d6eba6be34268d3c.jpg!cc_320x320.webp",
-          title:
-            "森马牛仔长裤男休闲弹力直筒裤2021新款ins潮牌男士水洗裤子 牛仔深蓝0840 31",
-          shoplink: "https://item.jd.com/10030732057580.html",
-        },
+        
       ],
     };
   },
@@ -160,7 +124,19 @@ export default {
     carouselHeightAuto: function () {
       this.height = (this.window.width() * 664) / 1920 + "px";
     },
+    getApi(){
+      const _this = this;
+      this.$axios.get("/").then(res=>{
+        var data = res.data.data;
+        _this.imageItems = JSON.parse(data.imageItems);
+        _this.adImages = JSON.parse(data.adImages);
+        _this.good_items = JSON.parse(data.good_items);
+      })
+    }
   },
+  created(){
+    this.getApi();
+  }
 };
 </script>
 
@@ -273,7 +249,7 @@ aside {
   height: 1.8rem;
 }
 
-footer{
+footer {
   width: 100%;
   min-width: 1366px;
 }

@@ -10,7 +10,12 @@ import Mall from "../views/Mall";
 import Search from "../views/Search";
 import Order from "../views/Order";
 import OrderClient from "../views/OrderClient";
+import Return from "../views/Return";
 import NotFound from "../views/404";
+import AdminShop from "../views/AdminShop";
+import AdminOrder from "../views/AdminOrder";
+import AdminUser from "../views/AdminUser";
+import AdminHome from "../views/AdminHome";
 
 
 Vue.use(VueRouter)
@@ -64,6 +69,37 @@ const routes = [{
     path: '/order_client',
     name: 'orderClient',
     component:OrderClient
+  },
+  {
+    path: '/return',
+    name: 'return',
+    component:Return
+  },
+  //下面是管理员路由
+  {
+    path: '/admin/login',
+    name: 'adminLogin',
+    component:Login,
+  },
+  {
+    path: '/admin/shop',
+    name: 'adminShop',
+    component:AdminShop,
+  },
+  {
+    path: '/admin/order',
+    name: 'adminOrder',
+    component:AdminOrder,
+  },
+  {
+    path: '/admin/user',
+    name: 'adminUser',
+    component:AdminUser,
+  },
+  {
+    path: '/admin/home',
+    name: 'adminHome',
+    component:AdminHome,
   },
   {
     path: '*',

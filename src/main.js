@@ -17,8 +17,12 @@ import axios from 'axios'
 import "./axios.js"
 import qs from 'qs'
 
+//引入封装的Websocket文件
+import socketApi from "./socket";
+
 Vue.prototype.$axios = axios;
 Vue.prototype.$qs = qs;
+Vue.prototype.socketApi = socketApi;
 
 Vue.use(ElementUI);
 Vue.use(LazyLoad,{

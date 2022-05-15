@@ -156,7 +156,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
         <div class="detail">
           <div class="ETab">
             <div class="tab-main">
@@ -373,22 +373,26 @@ export default {
           _this.indicatorToimage();
         });
       });
-      if (
-        window.localStorage.getItem("token") == "" ||
-        window.localStorage.getItem("token") == undefined
-      ) {
-        this.areaData = [];
-        this.areaId = "";
-      } else {
-        this.$axios.get("/get_address").then((res) => {
-          let data = res.data.data;
-          data = data.sort((a, b) => {
-            return parseInt(b.is_default) - parseInt(a.is_default);
-          });
-          _this.areaId = data[0].id;
-          _this.areaData = data;
-        });
-      }
+      console.log(window.localStorage.getItem("token"));
+      // _this.$nextTick(() => {
+      //   if (
+      //     window.localStorage.getItem("token") == "" ||
+      //     window.localStorage.getItem("token") == undefined
+      //   ) {
+      //     this.areaData = [];
+      //     this.areaId = "";
+      //   } else {
+      //     console.log(111);
+      //     this.$axios.get("/get_address").then((res) => {
+      //       let data = res.data.data;
+      //       data = data.sort((a, b) => {
+      //         return parseInt(b.is_default) - parseInt(a.is_default);
+      //       });
+      //       _this.areaId = data[0].id;
+      //       _this.areaData = data;
+      //     });
+      //   }
+      // });
     },
     //切换默认收货地址
     changeAddress(value) {
@@ -411,10 +415,33 @@ export default {
     this.$nextTick(() => {
       this.getshopInfo();
     });
+    
 
     // this.$nextTick(() => this.indicatorToimage());
     // this.$nextTick(() => this.setChooseAttrClassName());
     // this.$nextTick(() => this.loadDetailsImages()); //加载详情图
+  },
+  created(){
+    const _this = this;
+    this.$nextTick(() => {
+      if (
+        window.localStorage.getItem("token") == "" ||
+        window.localStorage.getItem("token") == undefined
+      ) {
+        this.areaData = [];
+        this.areaId = "";
+      } else {
+        console.log(111);
+        this.$axios.get("/get_address").then((res) => {
+          let data = res.data.data;
+          data = data.sort((a, b) => {
+            return parseInt(b.is_default) - parseInt(a.is_default);
+          });
+          _this.areaId = data[0].id;
+          _this.areaData = data;
+        });
+      }
+    });
   },
   updated() {
     this.$once("hook:updated", function () {

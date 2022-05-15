@@ -2,8 +2,11 @@
   <div class="header clearfix">
     <div class="search clearfix">
       <!-- 搜索相关 -->
-      <el-form ref="form" :model="form"  @submit.native.prevent>
-        <el-input v-model="form.searchText" placeholder="搜索" @keyup.enter.native="searchPost"
+      <el-form ref="form" :model="form" @submit.native.prevent>
+        <el-input
+          v-model="form.searchText"
+          placeholder="搜索"
+          @keyup.enter.native="searchPost"
           ><el-button
             icon="el-icon-search"
             slot="suffix"
@@ -18,13 +21,14 @@
           <a href="/home"
             ><el-button icon="iconfont icon-wode" title="个人中心"></el-button
           ></a>
-          <div class="info" v-if="username.length!=0 || username===undefined">
+          <div
+            class="info"
+            v-if="username.length != 0 || username === undefined"
+          >
             <span :title="username">昵称：{{ username }}</span
             ><a href="javascript:;" @click="quit">退出登录</a>
           </div>
-          <div class="no-info" v-else>
-            未登录 <a href="/login">去登陆</a>
-          </div>
+          <div class="no-info" v-else>未登录 <a href="/login">去登陆</a></div>
         </li>
         <li>
           <a href="/order"
@@ -37,13 +41,30 @@
             ><el-button icon="iconfont icon-gouwuche" title="购物车"></el-button
           ></a>
         </li>
+        <!-- <li>
+          <a href="javascript:;"
+            ><el-button
+              icon="iconfont icon-envelope-full"
+              title="消息"
+            ></el-button
+          ></a>
+        </li> -->
+        <li>
+          <a href="/"
+            ><el-button
+              icon="el-icon-s-home"
+              title="首页"
+            ></el-button
+          ></a>
+        </li>
       </ul>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
+
 export default {
   name: "Shop-Header",
   data() {
@@ -58,8 +79,9 @@ export default {
     searchPost: function () {
       console.log(`提交了 ${this.form.searchText}`);
       let keyword = this.form.searchText;
-      this.$router.push({name:'search',query:{keyword:keyword}});
+      this.$router.push({ name: "search", query: { keyword: keyword } });
     },
+    //退出账号
     quit() {
       this.$confirm("确定退出账号吗？", "提示", {
         confirmButtonText: "确定",
@@ -71,11 +93,10 @@ export default {
             type: "success",
             message: "已退出",
           });
-          setTimeout(()=>{
+          setTimeout(() => {
             this.$store.commit("REMOVE_INFO");
-            this.$router.go(0)
-          },3000)
-          
+            this.$router.go(0);
+          }, 3000);
         })
         .catch(() => {
           this.$message({
@@ -84,6 +105,7 @@ export default {
           });
         });
     },
+    
   },
   watch: {
     $route() {
@@ -91,29 +113,47 @@ export default {
     },
   },
   created() {
-    if (localStorage.getItem("token")===null || localStorage.getItem("token").length===0){
+    if (
+      localStorage.getItem("token") === null ||
+      localStorage.getItem("token").length === 0
+    ) {
       this.$store.commit("REMOVE_INFO");
     }
     this.username = this.$store.getters.getUser;
+    // // this.msg();
+    // var token = this.$store.getters.getToken;
+    // var wsUrl = `ws://127.0.0.1:8100/msg?token=${token}`;
+    // //建立socket连接
+    // this.socketApi.initWebSocket(wsUrl);
+    // //data为和后端商量好的数据格式
+    // const data = {
+    //   type: "CONNECT",
+    //   msg: "说的话",
+    // };
+    // this.websocketSend(data);
   },
+  mounted() {},
 };
 </script>
 
 <style lang="scss" scoped>
 .header {
-  padding: 1rem;
+  // padding: 1rem;
   width: 100%;
+  height: 70px;
+  line-height: 70px;
   min-width: 1366px;
   box-shadow: 1px 1px 15px rgb(155, 155, 155);
+  position: relative;
   // border-bottom: 1px solid gray;
 }
 /*搜索相关样式 */
 .search {
   width: 35rem;
-  margin: 0 3rem 0 20rem;
+  // margin: 0 3rem 0 20rem;
   float: left;
-  // position: relative;
-  // left: 20rem;
+  position: absolute;
+  left: 20rem;
 }
 .search /deep/ .el-input__inner {
   border-radius: 15px;
@@ -136,12 +176,14 @@ export default {
 
 /*快捷路径*/
 .shortcut {
-  width: 336px;
+  // width: 336px;
   // position: relative;
   // top: -5px;
   // right: 10rem;
   float: right;
-  margin: 0 4rem 0 0;
+  // margin: 0 4rem 0 0;
+  position: absolute;
+  right: 4rem;
 }
 .shortcut ul > li {
   list-style: none;
@@ -163,7 +205,8 @@ export default {
   position: relative;
   z-index: 9999;
 }
-.info,.no-info {
+.info,
+.no-info {
   display: none;
   position: absolute;
   z-index: 9999;
@@ -174,6 +217,7 @@ export default {
   font-size: 12px;
   padding: 10px;
   width: 100px;
+  line-height: 24px;
   left: 50%;
   transform: translate(-50%);
   overflow: hidden; //超出的文本隐藏
@@ -184,7 +228,8 @@ export default {
   display: block;
   margin-top: 5px;
 }
-.center:hover .info,.center:hover .no-info {
+.center:hover .info,
+.center:hover .no-info {
   display: block;
 }
 </style>

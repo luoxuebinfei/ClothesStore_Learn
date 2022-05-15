@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3224590 */
-  src: url('iconfont.woff2?t=1647589898656') format('woff2'),
-       url('iconfont.woff?t=1647589898656') format('woff'),
-       url('iconfont.ttf?t=1647589898656') format('truetype');
+  src: url('iconfont.woff2?t=1650973094054') format('woff2'),
+       url('iconfont.woff?t=1650973094054') format('woff'),
+       url('iconfont.ttf?t=1650973094054') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,10 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-envelope-full:before {
+  content: "\e982";
 }
 
 .icon-daifukuan:before {
